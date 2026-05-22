@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+
+  --color-navy: #0F172A;
+  --color-brand-blue: #0F172A;
+  --color-brand-orange: #ed6c15;
+  --color-light: #FFFFFF;
+}
+
+@layer base {
+  body {
+    @apply bg-light text-navy font-sans antialiased;
+  }
+}
+
+@keyframes marq {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: marq 32s linear infinite;
+}
+
+@layer components {
+  .hero-card {
+    @apply bg-white rounded-xl border border-[#0f172a]/10 shadow-sm;
+  }
+  
+  .badge {
+    @apply inline-block bg-brand-orange text-white px-3 py-1 text-xs font-bold rounded uppercase;
+  }
+  
+  .btn-primary {
+    @apply bg-brand-orange text-white px-6 py-3 rounded-lg font-bold uppercase tracking-wider transition-colors hover:bg-navy disabled:opacity-50;
+  }
+
+  .progress-bar {
+    @apply h-6 bg-navy/10 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-brand-orange transition-all duration-500;
+  }
+}

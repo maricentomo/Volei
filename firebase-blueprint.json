@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Raffle": {
+      "title": "Raffle",
+      "description": "Numbers sold in the raffle.",
+      "type": "object",
+      "properties": {
+        "number": { "type": "number", "description": "The number (e.g. 1 to 1800)" },
+        "status": { "type": "string", "enum": ["available", "reserved", "sold"], "description": "Current status of the number" },
+        "buyerName": { "type": "string", "description": "Name of the person who bought it" },
+        "buyerPhone": { "type": "string", "description": "Phone of the buyer" },
+        "reservedAt": { "type": "string", "format": "date-time", "description": "When it was reserved" }
+      },
+      "required": ["number", "status"]
+    },
+    "Donation": {
+      "title": "Donation",
+      "description": "Direct donations received.",
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number" },
+        "donorName": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["amount", "timestamp"]
+    }
+  },
+  "firestore": {
+    "raffle": {
+      "schema": "Raffle",
+      "description": "Collection of raffle numbers."
+    },
+    "donations": {
+      "schema": "Donation",
+      "description": "Collection of direct donations."
+    }
+  }
+}

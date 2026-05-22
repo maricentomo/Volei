@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: raffle
+    // Fields:
+    //   - number: number (required) - 1-1800
+    //   - status: string (required) - available, reserved, sold
+    //   - buyerName: string (optional)
+    //   - buyerPhone: string (optional)
+    //   - reservedAt: timestamp (optional)
+    //
+    // Collection: donations
+    // Fields:
+    //   - amount: number (required)
+    //   - donorName: string (required)
+    //   - timestamp: timestamp (required)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         request.auth.token.email == "mari.centomo@gmail.com");
+    }
+
+    function isValidRaffleUpdate() {
+      let data = request.resource.data;
+      return data.number is number &&
+             data.status in ['available', 'reserved', 'sold'] &&
+             (!('buyerName' in data) || (data.buyerName is string && data.buyerName.size() < 100)) &&
+             (!('buyerPhone' in data) || (data.buyerPhone is string && data.buyerPhone.size() < 20));
+    }
+
+    match /raffle/{docId} {
+      allow read: if true;
+      allow create: if (isValidRaffleUpdate() && request.resource.data.status == 'reserved') || isAdmin();
+      allow update: if (isValidRaffleUpdate() && resource.data.status == 'available' && request.resource.data.status == 'reserved') || isAdmin();
+    }
+
+    match /donations/{docId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public can donate
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId || isAdmin();
+    }
+  }
+}

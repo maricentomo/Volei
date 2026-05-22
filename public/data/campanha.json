@@ -1,0 +1,48 @@
+{
+  "meta": 40000,
+  "arrecadado": 1907,
+  "gasto": 0,
+  "atletas": [
+    { "num": "01", "name": "Juan Contini Vilas Boas",            "short": "Contini",       "pos": "Ponteiro",   "photo": null,                                          "sales": 0 },
+    { "num": "02", "name": "Carlos Eduardo Ferragut Tosto",      "short": "Cadu",          "pos": "Levantador", "photo": "/Fotos_Atletas/2_CADUlevantador.JPG",          "sales": 0 },
+    { "num": "03", "name": "Bruno de Sordi",                     "short": "Sordi",         "pos": "Levantador", "photo": "/Fotos_Atletas/3_SORDIlevantador.JPG",         "sales": 0 },
+    { "num": "04", "name": "Piettro Tavares Lisboa",             "short": "Lisboa",        "pos": "Líbero",     "photo": "/Fotos_Atletas/4_LISBOAlibero.JPG",            "sales": 0 },
+    { "num": "05", "name": "Eduardo Hilario Besani",             "short": "Dudu",          "pos": "Ponteiro",   "photo": "/Fotos_Atletas/5_DUDUponteiro.JPG",            "sales": 0 },
+    { "num": "06", "name": "Rafael Rufino Florentino",           "short": "Rufino",        "pos": "Ponteiro",   "photo": "/Fotos_Atletas/6_RUFINOponteiro.JPG",          "sales": 0 },
+    { "num": "07", "name": "Yagho Phyllyp Bezerra Santos",       "short": "Phyllyp",       "pos": "Central",    "photo": "/Fotos_Atletas/7_PHYLLYPcentral.JPG",          "sales": 0 },
+    { "num": "08", "name": "Renan Braz de Souza Tomasetto",      "short": "Tomasetto",     "pos": "Levantador", "photo": "/Fotos_Atletas/8_TOMASETTOlevantador.JPG",     "sales": 0 },
+    { "num": "09", "name": "Adrian Derick Rodrigues de Morais",  "short": "Adrian Derick", "pos": "Levantador", "photo": "/Fotos_Atletas/9_ADRIANDERICKlevantador.JPG", "sales": 0 },
+    { "num": "10", "name": "Pedro Centomo de Castro",            "short": "Centomo",       "pos": "Oposto",     "photo": "/Fotos_Atletas/10_CENTOMOoposto.JPG",          "sales": 0 },
+    { "num": "11", "name": "Kairon Sousa Rocha",                 "short": "Kairon",        "pos": "Ponteiro",   "photo": "/Fotos_Atletas/11_KAIRONPonteiro (2).JPG",     "sales": 0 },
+    { "num": "12", "name": "Joaquim Alexandre Medeiros Eugenio", "short": "Joaquim",       "pos": "Central",    "photo": null,                                          "sales": 0 },
+    { "num": "13", "name": "Pedro Pereira Alves",                "short": "Pedro",         "pos": "Central",    "photo": "/Fotos_Atletas/13_PEDROcentral.JPG",           "sales": 0 },
+    { "num": "14", "name": "Thiago Brito Escolástico",           "short": "Thiago",        "pos": "Central",    "photo": "/Fotos_Atletas/14_THIAGOcentral.JPG",          "sales": 0 },
+    { "num": "16", "name": "Miguel Isoppi Gasperoni",            "short": "Isoppi",        "pos": "Central",    "photo": "/Fotos_Atletas/16_ISOPPIcentral.JPG",          "sales": 0 },
+    { "num": "17", "name": "Luiz Otavio de Souza Valle",         "short": "Luiz",          "pos": "Ponteiro",   "photo": "/Fotos_Atletas/17_LUIZponteiro.JPG",           "sales": 0 },
+    { "num": "18", "name": "Paulo Henrique Silva Resende",       "short": "PH Resende",    "pos": "Oposto",     "photo": "/Fotos_Atletas/18_PHRESENDEoposto.JPG",        "sales": 0 },
+    { "num": "19", "name": "Leonardo Zanelato Amorim",           "short": "Léo Amorim",    "pos": "Ponteiro",   "photo": "/Fotos_Atletas/19_LEOAMORIMponteiro.JPG",      "sales": 0 },
+    { "num": "22", "name": "Rodolfo Ryan Munhao",                "short": "Rodolfo",       "pos": "Líbero",     "photo": "/Fotos_Atletas/22_RODOLFOlibero.JPG",          "sales": 0 },
+    { "num": "27", "name": "Juan Pablo Almeida Gomes",           "short": "Juan",          "pos": "Oposto",     "photo": "/Fotos_Atletas/27_JUANoposto.JPG",             "sales": 0 },
+    { "num": "28", "name": "Yoswell Enrique Mendoza Godoy",      "short": "Yoswell",       "pos": "Central",    "photo": "/Fotos_Atletas/28_YOSWELLcentral.JPG",         "sales": 0 },
+    { "num": "30", "name": "Murilo",                             "short": "Murilo",        "pos": "Ponteiro",   "photo": null,                                          "sales": 0 }
+  ],
+  "receitas": [
+    { "label": "Rifa Principal",  "sub": "0 números vendidos",  "valor": 0    },
+    { "label": "Rifas Avulsas",   "sub": "2 rifas realizadas",  "valor": 1000 },
+    { "label": "Cantina",         "sub": "1 evento",            "valor": 657  },
+    { "label": "Doações",         "sub": "1 doação",            "valor": 250  }
+  ],
+  "orcamento": [
+    { "label": "Transporte",  "sub": "Ônibus fretado ida e volta",    "valor": 12600 },
+    { "label": "Hospedagem",  "sub": "Pousada · 7 dias · 22 pessoas", "valor": 7500  },
+    { "label": "Alimentação", "sub": "Almoço e jantar · 7 dias",      "valor": 5400  },
+    { "label": "Inscrição",   "sub": "Taxa oficial Taça Paraná",      "valor": 3000  },
+    { "label": "Reserva",     "sub": "Imprevistos, fisioterapia",     "valor": 11500 }
+  ],
+  "extrato": [
+    { "data": "21/05/2026", "desc": "Rifa Kit Bem Estar · 50 bilhetes",  "cat": "RIFA AVULSA", "tipo": "ENTRADA", "valor": 500 },
+    { "data": "01/05/2026", "desc": "Doação Pix · Alcione e Wagner",     "cat": "DOAÇÃO",      "tipo": "ENTRADA", "valor": 250 },
+    { "data": "26/04/2026", "desc": "Rifa Cesta de Frutas · 50 bilhetes","cat": "RIFA AVULSA", "tipo": "ENTRADA", "valor": 500 },
+    { "data": "26/04/2026", "desc": "Cantina Ceiul",                     "cat": "CANTINA",     "tipo": "ENTRADA", "valor": 657 }
+  ]
+}
