@@ -26,6 +26,25 @@
   animation: marq 32s linear infinite;
 }
 
+.rifa-grid {
+  scrollbar-width: thin;
+  scrollbar-color: #ed6c15 rgba(15, 23, 42, 0.07);
+}
+.rifa-grid::-webkit-scrollbar {
+  width: 6px;
+}
+.rifa-grid::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.07);
+  border-radius: 9999px;
+}
+.rifa-grid::-webkit-scrollbar-thumb {
+  background: #ed6c15;
+  border-radius: 9999px;
+}
+.rifa-grid::-webkit-scrollbar-thumb:hover {
+  background: #0f172a;
+}
+
 @layer components {
   .hero-card {
     @apply bg-white rounded-xl border border-[#0f172a]/10 shadow-sm;

@@ -248,7 +248,7 @@ export default function Rifa() {
 
               {/* Grid */}
               <div
-                className="rounded-xl border border-[#0f172a]/10 p-2 grid grid-cols-[repeat(10,1fr)] md:grid-cols-[repeat(20,1fr)] md:overflow-y-auto md:max-h-[540px]"
+                className="rifa-grid rounded-xl border border-[#0f172a]/10 p-2 overflow-y-auto grid grid-cols-[repeat(10,1fr)] md:grid-cols-[repeat(20,1fr)] max-h-[520px] md:max-h-[620px]"
                 style={{ gap: 4, background: 'rgba(15,23,42,0.03)' }}
               >
                 {visible.map(i => {
