@@ -248,8 +248,8 @@ export default function Rifa() {
 
               {/* Grid */}
               <div
-                className="rounded-xl border border-[#0f172a]/10 overflow-y-auto p-2"
-                style={{ display: 'grid', gridTemplateColumns: 'repeat(20, 1fr)', gap: 4, maxHeight: 540, background: 'rgba(15,23,42,0.03)' }}
+                className="rounded-xl border border-[#0f172a]/10 p-2 grid grid-cols-[repeat(10,1fr)] md:grid-cols-[repeat(20,1fr)] md:overflow-y-auto md:max-h-[540px]"
+                style={{ gap: 4, background: 'rgba(15,23,42,0.03)' }}
               >
                 {visible.map(i => {
                   const sold = SOLD.has(i);
@@ -258,7 +258,7 @@ export default function Rifa() {
                     <div
                       key={i}
                       onClick={() => toggle(i)}
-                      className="font-mono font-semibold text-[11px] flex items-center justify-center rounded transition-all"
+                      className="font-mono font-semibold text-[13px] md:text-[11px] flex items-center justify-center rounded transition-all"
                       style={{
                         aspectRatio: '1',
                         cursor: sold ? 'not-allowed' : 'pointer',
