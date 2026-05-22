@@ -44,9 +44,9 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-white border-b-4 border-brand-blue sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-[76px] flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-[91px] flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="Base Vôlei Louveira" className="h-14 w-auto" />
+            <img src="/logo.png" alt="Base Vôlei Louveira" className="h-[67px] w-auto" />
           </Link>
 
           <nav className="hidden xl:block">
@@ -63,7 +63,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                   <NavLink
                     to={item.path}
                     className={({ isActive }) =>
-                      `text-[11px] font-bold uppercase tracking-wider transition-colors hover:text-brand-orange ${
+                      `text-[13px] font-bold uppercase tracking-wider transition-colors hover:text-brand-orange ${
                         isActive ? 'text-brand-orange' : 'text-navy opacity-70'
                       }`
                     }
@@ -162,11 +162,11 @@ function Layout({ children }: { children: React.ReactNode }) {
             <div className="p-4 bg-white/5 rounded-lg border border-white/10 flex flex-col gap-5 w-fit">
               <a href="https://iamod.com.br" target="_blank" rel="noopener noreferrer" className="flex flex-col gap-2 hover:opacity-80 transition-opacity">
                 <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Design e Tecnologia</p>
-                <img src="/iamod.png" alt="IaMod" style={{ width: '70%', height: 'auto' }} />
+                <img src="/iamod.png" alt="IaMod" style={{ width: '60%', height: 'auto' }} />
               </a>
               <a href="https://consultoriaquali.com.br/" target="_blank" rel="noopener noreferrer" className="flex flex-col gap-2 hover:opacity-80 transition-opacity">
                 <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Estratégia e Gestão</p>
-                <img src="/qws.png" alt="QWS Consultoria" style={{ width: '70%', height: 'auto' }} />
+                <img src="/qws.png" alt="QWS Consultoria" style={{ width: '60%', height: 'auto' }} />
               </a>
             </div>
           </div>
