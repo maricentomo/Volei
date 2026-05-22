@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCampanha } from '../lib/useCampanha';
 
@@ -34,7 +34,17 @@ export default function Rifa() {
   const { data } = useCampanha();
   const ATHLETES = data?.atletas ?? [];
   const arrecadado = data?.arrecadado ?? 0;
-  const meta = data?.meta ?? 30000;
+  const meta = data?.meta ?? 40000;
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#numeros') {
+      const t = setTimeout(() => {
+        document.getElementById('numeros')?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, [location.hash]);
 
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [search, setSearch] = useState('');
@@ -191,7 +201,7 @@ export default function Rifa() {
       </div>
 
       {/* ── Escolha os números ────────────────────────────── */}
-      <section className="py-20 px-4 md:px-8" style={{ background: 'rgba(15,23,42,0.03)' }}>
+      <section id="numeros" className="py-20 px-4 md:px-8" style={{ background: 'rgba(15,23,42,0.03)' }}>
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-end flex-wrap gap-6 mb-8">
             <div>

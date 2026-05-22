@@ -6,13 +6,21 @@
 import { BrowserRouter, Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Atletas from './pages/Atletas';
 import Patrocinadores from './pages/Patrocinadores';
 import Arrecadacao from './pages/Arrecadacao';
 import Rifa from './pages/Rifa';
 import Ranking from './pages/Ranking';
+
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) window.scrollTo(0, 0);
+  }, [pathname, hash]);
+  return null;
+}
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -162,11 +170,11 @@ function Layout({ children }: { children: React.ReactNode }) {
             <div className="p-4 bg-white/5 rounded-lg border border-white/10 flex flex-col gap-5 w-fit">
               <a href="https://iamod.com.br" target="_blank" rel="noopener noreferrer" className="flex flex-col gap-2 hover:opacity-80 transition-opacity">
                 <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Design e Tecnologia</p>
-                <img src="/iamod.png" alt="IaMod" style={{ width: '60%', height: 'auto' }} />
+                <img src="/iamod.png" alt="IaMod" style={{ width: '48%', height: 'auto' }} />
               </a>
               <a href="https://consultoriaquali.com.br/" target="_blank" rel="noopener noreferrer" className="flex flex-col gap-2 hover:opacity-80 transition-opacity">
                 <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Estratégia e Gestão</p>
-                <img src="/qws.png" alt="QWS Consultoria" style={{ width: '60%', height: 'auto' }} />
+                <img src="/qws.png" alt="QWS Consultoria" style={{ width: '48%', height: 'auto' }} />
               </a>
             </div>
           </div>
@@ -179,6 +187,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Layout>
         <AnimatedRoutes />
       </Layout>

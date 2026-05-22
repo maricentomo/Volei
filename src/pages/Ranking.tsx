@@ -1,27 +1,75 @@
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCampanha } from '../lib/useCampanha';
 
-const TL_DATA = [8, 14, 22, 31, 26, 48, 62, 70];
+const CIRC = 263.9;
 const W = 800, H = 220, PAD = 20;
-const STEP = (W - PAD * 2) / (TL_DATA.length - 1);
-const MX = Math.max(...TL_DATA);
-const TL_PTS = TL_DATA.map((d, i) => [
-  PAD + i * STEP,
-  H - PAD - (d / MX) * (H - PAD * 2 - 20),
-]);
-const TL_LINE = TL_PTS.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
-const TL_AREA = TL_LINE + ` L${TL_PTS[TL_PTS.length - 1][0].toFixed(1)} ${H - PAD} L${TL_PTS[0][0].toFixed(1)} ${H - PAD} Z`;
+const CAMP_START_MS = new Date(2026, 3, 12).getTime();
+const CAMP_END_MS   = new Date(2026, 6, 15).getTime();
+const MS_PER_WEEK   = 7 * 24 * 60 * 60 * 1000;
+
+function parseDateMs(s: string): number | null {
+  if (!s) return null;
+  const p = s.split('/');
+  if (p.length !== 3) return null;
+  return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0])).getTime();
+}
+
+function buildChart(vals: number[]) {
+  const STEP = (W - PAD * 2) / (vals.length - 1);
+  const MX = Math.max(...vals, 1);
+  const pts = vals.map((d, i) => [
+    PAD + i * STEP,
+    H - PAD - (d / MX) * (H - PAD * 2 - 20),
+  ]);
+  const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const area = line + ` L${pts[pts.length-1][0].toFixed(1)} ${H-PAD} L${pts[0][0].toFixed(1)} ${H-PAD} Z`;
+  return { pts, line, area };
+}
 
 export default function Ranking() {
   const { data, loading } = useCampanha();
   const RANK = data
     ? [...data.atletas].sort((a, b) => b.sales - a.sales)
     : [];
-  const maxSales = RANK[0]?.sales ?? 0;
-  const totalSales = RANK.reduce((s, a) => s + a.sales, 0);
+  const maxSales    = RANK[0]?.sales ?? 0;
+  const totalSales  = RANK.reduce((s, a) => s + a.sales, 0);
   const totalRevenue = totalSales * 30;
+  const arrecadado  = data?.arrecadado ?? 0;
+  const meta        = data?.meta ?? 40000;
+
+  const clamp = (v: number) => Math.max(0, Math.min(100, v));
+  const pctMeta    = clamp(meta > 0 ? Math.round((arrecadado / meta) * 100) : 0);
+  const pctRifas   = clamp(Math.round((totalSales / 1000) * 100));
+  const vendendo   = RANK.filter(a => a.sales > 0).length;
+  const pctAtletas = clamp(RANK.length > 0 ? Math.round((vendendo / RANK.length) * 100) : 0);
+  const totalDias  = Math.round((CAMP_END_MS - CAMP_START_MS) / 86400000);
+  const elapsed    = Math.max(0, Math.min(totalDias, Math.round((Date.now() - CAMP_START_MS) / 86400000)));
+  const pctDias    = clamp(Math.round((elapsed / totalDias) * 100));
+
+  const donuts = [
+    { pct: pctMeta,    stroke: '#ed6c15', label: 'Meta arrecadada',  sub: `R$ ${arrecadado.toLocaleString('pt-BR')} de R$ ${meta.toLocaleString('pt-BR')}` },
+    { pct: pctRifas,   stroke: '#0f172a', label: 'Rifas vendidas',   sub: `${totalSales} de 1.000 números` },
+    { pct: pctAtletas, stroke: '#ed6c15', label: 'Atletas vendendo', sub: `${vendendo} de ${RANK.length} atletas` },
+    { pct: pctDias,    stroke: '#0f172a', label: 'Dias da campanha', sub: `${elapsed} de ${totalDias} dias decorridos` },
+  ];
+
+  const weeklyData = useMemo(() => {
+    const weeks = new Array(8).fill(0);
+    if (!data?.extrato) return weeks;
+    for (const entry of data.extrato) {
+      if (entry.tipo !== 'ENTRADA') continue;
+      const ts = parseDateMs(entry.data);
+      if (!ts) continue;
+      const idx = Math.floor((ts - CAMP_START_MS) / MS_PER_WEEK);
+      if (idx >= 0 && idx < 8) weeks[idx] += entry.valor;
+    }
+    return weeks;
+  }, [data?.extrato]);
+
+  const { pts: TL_PTS, line: TL_LINE, area: TL_AREA } = buildChart(weeklyData);
 
   return (
     <div>
@@ -177,12 +225,7 @@ export default function Ranking() {
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {[
-              { pct: 28, stroke: '#ed6c15', offset: 189.7, label: 'Meta arrecadada',    sub: 'R$ 8.430 de R$ 30.000'       },
-              { pct: 28, stroke: '#0f172a', offset: 189.6, label: 'Rifas vendidas',     sub: '281 de 1.000 números'        },
-              { pct: 70, stroke: '#ed6c15', offset: 79.2,  label: 'Atletas vendendo',   sub: '14 de 20 já abriram conta'   },
-              { pct: 79, stroke: '#0f172a', offset: 55.4,  label: 'Dias da campanha',   sub: '42 de 53 dias decorridos'    },
-            ].map((d, i) => (
+            {donuts.map((d, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
@@ -193,7 +236,7 @@ export default function Ranking() {
                   <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                     <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(15,23,42,0.1)" strokeWidth="12" />
                     <circle cx="50" cy="50" r="42" fill="none" stroke={d.stroke} strokeWidth="12"
-                      strokeDasharray="263.9" strokeDashoffset={d.offset} strokeLinecap="round" />
+                      strokeDasharray={CIRC} strokeDashoffset={CIRC * (1 - d.pct / 100)} strokeLinecap="round" />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center text-[38px] font-black text-navy">{d.pct}%</div>
                 </div>
@@ -240,7 +283,7 @@ export default function Ranking() {
                       x={p[0]} y={Math.max(p[1] - 12, 14)}
                       textAnchor="middle" fill="rgba(255,255,255,.85)"
                       fontFamily="monospace" fontSize="11"
-                    >{TL_DATA[i]}</text>
+                    >{weeklyData[i] > 0 ? `R$${Math.round(weeklyData[i])}` : '0'}</text>
                   </g>
                 ))}
               </g>
@@ -249,7 +292,7 @@ export default function Ranking() {
             <div className="flex gap-5 flex-wrap mt-4 font-mono text-[11px] tracking-widest uppercase text-white/70">
               <span>
                 <span className="inline-block w-3 h-3 rounded-sm bg-brand-orange mr-2 align-middle" />
-                Rifas vendidas / semana
+                Entradas semanais (R$)
               </span>
               <span className="opacity-50">Sem 1: 12/abr · Sem 8: 31/mai</span>
             </div>
@@ -270,7 +313,7 @@ export default function Ranking() {
                 Quem vender mais rifas até <strong className="text-white">15/07/2026</strong> recebe um par de chuteiras Mizuno Wave Lightning + cordão da campanha + foto pra parede da quadra.
               </p>
               <Link
-                to="/rifa"
+                to="/rifa#numeros"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-brand-orange text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-white hover:text-brand-orange transition-colors"
               >
                 Apoiar meu atleta <ArrowRight size={18} />

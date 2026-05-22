@@ -29,7 +29,7 @@ const MARQUEE_ITEMS = Array(8).fill('A sua ajuda realiza um sonho');
 
 export default function Home() {
   const { data } = useCampanha();
-  const meta     = data?.meta ?? 30000;
+  const meta     = data?.meta ?? 40000;
   const atual    = data?.arrecadado ?? 0;
   const progresso = (atual / meta) * 100;
 

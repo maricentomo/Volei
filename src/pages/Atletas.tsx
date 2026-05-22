@@ -18,6 +18,7 @@ function AtCard({ num, short, pos, photo }: { num: string; short: string; pos: s
         <img
           src={photo}
           alt={short}
+          onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
           style={{ position: 'absolute', top: '-12%', left: 0, width: '100%', height: '112%', objectFit: 'cover', objectPosition: 'top' }}
         />
       )}
