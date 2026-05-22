@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'motion/react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCampanha } from '../lib/useCampanha';
 
@@ -49,8 +49,11 @@ export default function Rifa() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'free' | 'sel'>('all');
-  const [form, setForm] = useState({ name: '', phone: '', email: '', athlete: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', cpf: '', athlete: '' });
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string; total: number; payment_id: string } | null>(null);
+  const [pixError, setPixError] = useState('');
 
   const toggle = (i: number) => {
     if (SOLD.has(i)) return;
@@ -89,10 +92,36 @@ export default function Rifa() {
   const qty = selected.size;
   const total = qty * 0.05;
 
-  const finalize = (e: React.FormEvent) => {
+  const finalize = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selected.size) { alert('Escolha pelo menos 1 número.'); return; }
-    setShowModal(true);
+    setLoading(true);
+    setPixError('');
+    const athlete = ATHLETES.find(a => a.num === form.athlete);
+    try {
+      const res = await fetch('https://bot-n8n.k474gt.easypanel.host/webhook/rifa-criar-pix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          total,
+          numero: [...selected].sort((a, b) => a - b).join(','),
+          nome: form.name,
+          email: form.email,
+          whatsapp: form.phone,
+          cpf: form.cpf.replace(/\D/g, ''),
+          atleta_id: form.athlete,
+          atleta_nome: athlete?.short ?? '',
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || json.erro) throw new Error(json.mensagem || 'Erro ao gerar Pix');
+      setPixData(json);
+      setShowModal(true);
+    } catch (err: unknown) {
+      setPixError(err instanceof Error ? err.message : 'Erro ao conectar. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -335,6 +364,7 @@ export default function Rifa() {
                   { id: 'name',  label: 'Seu nome completo',        type: 'text',  placeholder: 'Ana Silva'          },
                   { id: 'phone', label: 'WhatsApp',                  type: 'tel',   placeholder: '(19) 9 9999-9999'   },
                   { id: 'email', label: 'E-mail',                    type: 'email', placeholder: 'ana@email.com'       },
+                  { id: 'cpf',   label: 'CPF',                       type: 'text',  placeholder: '000.000.000-00'      },
                 ].map(f => (
                   <div key={f.id}>
                     <label className="block font-mono text-[10px] tracking-widest uppercase text-navy/60 mb-1.5">{f.label}</label>
@@ -362,13 +392,17 @@ export default function Rifa() {
                   <p className="text-[12px] text-navy/50 mt-1.5">O atleta com mais rifas vendidas ganha um prêmio especial.</p>
                 </div>
 
+                {pixError && (
+                  <p className="text-red-500 text-sm text-center font-semibold">{pixError}</p>
+                )}
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-brand-orange text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-navy transition-colors"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-brand-orange text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-navy transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Finalizar compra <ArrowRight size={18} />
+                  {loading ? 'Gerando Pix…' : <> Finalizar compra <ArrowRight size={18} /> </>}
                 </button>
-                <p className="text-[12px] text-navy/40 text-center">Você receberá o Pix por WhatsApp em até 2 minutos.</p>
+                <p className="text-[12px] text-navy/40 text-center">O QR Code Pix aparece aqui na tela na hora.</p>
               </form>
             </aside>
 
@@ -449,35 +483,55 @@ export default function Rifa() {
         </div>
       </section>
 
-      {/* ── Modal de sucesso ──────────────────────────────── */}
+      {/* ── Modal Pix ─────────────────────────────────────── */}
       <AnimatePresence>
-        {showModal && (
+        {showModal && pixData && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-5"
             style={{ background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(4px)' }}
-            onClick={() => setShowModal(false)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }}
               transition={{ type: 'spring', duration: 0.4 }}
-              className="bg-white rounded-2xl p-10 max-w-md w-full text-center shadow-2xl"
+              className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
               onClick={e => e.stopPropagation()}
             >
-              <motion.div
-                initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
-                className="w-20 h-20 rounded-full bg-brand-orange text-white flex items-center justify-center text-[44px] mx-auto mb-5"
-              >
-                ✓
-              </motion.div>
-              <h3 className="font-black text-navy uppercase text-2xl tracking-tight mb-3">Reserva feita!</h3>
-              <p className="text-navy/70 text-base leading-relaxed mb-6">
-                Mandamos o Pix de <strong className="text-navy">R$ {total.toLocaleString('pt-BR')}</strong> no seu WhatsApp.
-                O crédito vai pro atleta <strong className="text-navy">{ATHLETES.find(a => a.num === form.athlete)?.short ?? '—'}</strong>. Boa sorte!
+              <div className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Pix gerado · pague agora
+              </div>
+              <p className="font-mono text-[11px] tracking-widest uppercase text-navy/50 mb-2">
+                Total a pagar
+              </p>
+              <p className="text-4xl font-black text-navy mb-5">
+                R$ {pixData.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              {pixData.qr_code_base64 && (
+                <img
+                  src={`data:image/png;base64,${pixData.qr_code_base64}`}
+                  alt="QR Code Pix"
+                  className="w-48 h-48 mx-auto mb-5 rounded-xl border border-[#0f172a]/10"
+                />
+              )}
+              <p className="font-mono text-[10px] tracking-widest uppercase text-navy/50 mb-2">Ou copie o código</p>
+              <div className="flex gap-2 mb-6">
+                <input
+                  readOnly value={pixData.qr_code}
+                  className="flex-1 px-3 py-2 rounded-xl border border-[#0f172a]/15 font-mono text-[11px] text-navy bg-[#0f172a]/03 truncate outline-none"
+                />
+                <button
+                  onClick={() => navigator.clipboard.writeText(pixData.qr_code)}
+                  className="px-4 py-2 bg-brand-orange text-white font-black text-xs rounded-xl hover:bg-navy transition-colors whitespace-nowrap"
+                >
+                  Copiar
+                </button>
+              </div>
+              <p className="text-[11px] text-navy/50 mb-5">
+                Atleta indicado: <strong className="text-navy">{ATHLETES.find(a => a.num === form.athlete)?.short ?? '—'}</strong>
               </p>
               <button
-                onClick={() => setShowModal(false)}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors"
+                onClick={() => { setShowModal(false); setPixData(null); setSelected(new Set()); }}
+                className="w-full px-8 py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors"
               >
                 Fechar
               </button>
