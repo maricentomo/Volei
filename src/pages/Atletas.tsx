@@ -208,7 +208,7 @@ Alisson é formado em Educação Física pela Escola Superior de Educação Fís
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translate(8px,8px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0px 0px 0px #ed6c15'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translate(0,0)'; (e.currentTarget as HTMLElement).style.boxShadow = '8px 8px 0px #ed6c15'; }}
             >
-              <img src="/Fotos_Atletas/29_ALISSONtecnico.JPG" alt="Alisson Salomão" style={{ width: '100%', display: 'block', objectFit: 'cover' }} />
+              <img src="/Fotos_Atletas/29_ALISSONtecnico.jpg" alt="Alisson Salomão" style={{ width: '100%', display: 'block', objectFit: 'cover' }} />
             </div>
           </motion.div>
 
