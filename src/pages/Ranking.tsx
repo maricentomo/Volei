@@ -141,12 +141,22 @@ export default function Ranking() {
                 <motion.div
                   key={p.place}
                   initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: p.delay }}
-                  className="relative overflow-hidden rounded-2xl p-7 text-white"
+                  className="relative overflow-hidden rounded-2xl p-7 text-white flex flex-col"
                   style={{ background: p.bg, minHeight: p.minH }}
                 >
                   {p.crown && <span className="absolute top-5 right-5 text-[38px]">👑</span>}
                   <span className="absolute bottom-[-20px] right-[-10px] text-[220px] font-black leading-none pointer-events-none select-none" style={{ color: 'rgba(255,255,255,.06)' }}>{a.num}</span>
                   <div className="text-[92px] font-black leading-[0.85]" style={{ color: 'transparent', WebkitTextStroke: `2px ${p.stroke}` }}>{p.place}</div>
+                  {a.photo && (
+                    <div className="mb-4">
+                      <img
+                        src={a.photo}
+                        alt={a.short}
+                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                        className="w-20 h-20 rounded-full object-cover object-top border-2 border-white/30"
+                      />
+                    </div>
+                  )}
                   <div className="text-[34px] font-black uppercase leading-[0.95] mb-1.5">{a.short}</div>
                   <div className="text-[11px] font-black uppercase tracking-widest opacity-70">#{a.num} · {a.pos}</div>
                   <div className="mt-6 text-[64px] font-black leading-none">
@@ -186,9 +196,21 @@ export default function Ranking() {
                   <div
                     key={i}
                     className={`grid items-center gap-4 py-3 ${i < RANK.length - 1 ? 'border-b border-dashed border-[#0f172a]/10' : ''}`}
-                    style={{ gridTemplateColumns: '30px 1fr 80px' }}
+                    style={{ gridTemplateColumns: '30px 44px 1fr 80px' }}
                   >
                     <div className="text-[18px] font-black text-navy/40 leading-none">{String(i + 1).padStart(2, '0')}</div>
+                    <div>
+                      {r.photo ? (
+                        <img
+                          src={r.photo}
+                          alt={r.short}
+                          onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                          className="w-9 h-9 rounded-full object-cover object-top border border-[#0f172a]/10"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-[#0f172a]/10 flex items-center justify-center font-black text-navy/30 text-xs">{r.num}</div>
+                      )}
+                    </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-black text-navy uppercase text-base md:text-lg tracking-tight leading-tight">{r.name}</span>
                       <span className="font-mono text-[10px] tracking-widest uppercase text-navy/50 mt-0.5">#{r.num} · {r.pos}</span>

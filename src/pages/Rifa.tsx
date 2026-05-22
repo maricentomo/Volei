@@ -87,7 +87,7 @@ export default function Rifa() {
   }, [search, filter, selected]);
 
   const qty = selected.size;
-  const total = qty * 30;
+  const total = qty * 0.05;
 
   const finalize = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +117,7 @@ export default function Rifa() {
                 <span className="text-brand-orange">um iPhone 16.</span>
               </h1>
               <p className="text-white/85 text-lg leading-relaxed max-w-lg mb-10">
-                Escolha quantos números quiser, indique seu atleta favorito e concorra ao prêmio. Cada R$ 30 leva o time mais perto da Taça Paraná.
+                Escolha quantos números quiser, indique seu atleta favorito e concorra ao prêmio. Cada R$ 0,05 leva o time mais perto da Taça Paraná.
               </p>
 
               {/* Progress bar — igual à Home */}
@@ -187,7 +187,7 @@ export default function Rifa() {
       <div className="bg-brand-orange border-t-2 border-b-2 border-navy py-5 px-4 md:px-8">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between gap-6">
           {[
-            { k: 'Valor por número', v: 'R$ 30'             },
+            { k: 'Valor por número', v: 'R$ 0,05'            },
             { k: 'Prêmio',           v: 'iPhone 16 · 128GB' },
             { k: 'Data do sorteio',  v: '19/07/2026'        },
             { k: 'Pagamento',        v: 'Pix · Cartão'      },
@@ -281,7 +281,7 @@ export default function Rifa() {
               <div className="flex justify-between items-center mb-5">
                 <h3 className="font-black text-navy uppercase text-2xl tracking-tight">Seu pedido</h3>
                 <span className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> 30 reais cada
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> 0,05 p/ teste
                 </span>
               </div>
 
