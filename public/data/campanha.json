@@ -33,11 +33,15 @@
     { "label": "Doações",         "sub": "1 doação",            "valor": 250  }
   ],
   "orcamento": [
-    { "label": "Transporte",  "sub": "Ônibus fretado ida e volta",    "valor": 12600 },
-    { "label": "Hospedagem",  "sub": "Pousada · 7 dias · 22 pessoas", "valor": 7500  },
-    { "label": "Alimentação", "sub": "Almoço e jantar · 7 dias",      "valor": 5400  },
-    { "label": "Inscrição",   "sub": "Taxa oficial Taça Paraná",      "valor": 3000  },
-    { "label": "Reserva",     "sub": "Imprevistos, fisioterapia",     "valor": 11500 }
+    { "label": "Prêmio",         "sub": "iPhone 16 128gb ou R$4.000 em Pix",  "valor": 5000  },
+    { "label": "Inscrição",      "sub": "Taxa Taça Paraná · em 2x",            "valor": 4250  },
+    { "label": "Ônibus",         "sub": "Transporte ida e volta",               "valor": 5000  },
+    { "label": "Uniformes",      "sub": "2 uniformes por atleta",               "valor": 5000  },
+    { "label": "Casa",           "sub": "Hospedagem",                           "valor": 7000  },
+    { "label": "Alimentação",    "sub": "Refeições durante o campeonato",       "valor": 9500  },
+    { "label": "Gamificação",    "sub": "Premiação 1º ao 3º vendedor",          "valor": 1000  },
+    { "label": "Taxa ML",        "sub": "Taxa Mercado Livre (0,99%)",           "valor": 297   },
+    { "label": "Diversos",       "sub": "Imprevistos e extras",                 "valor": 2953  }
   ],
   "extrato": [
     { "data": "21/05/2026", "desc": "Rifa Kit Bem Estar · 50 bilhetes",  "cat": "RIFA AVULSA", "tipo": "ENTRADA", "valor": 500 },
