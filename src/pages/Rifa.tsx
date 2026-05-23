@@ -24,8 +24,6 @@ function AnimatedNumber({ end }: { end: number }) {
 
 const TOTAL = 1000;
 
-const SOLD = new Set<number>();
-
 function fmt(n: number) {
   return String(n).padStart(3, '0');
 }
@@ -55,9 +53,19 @@ export default function Rifa() {
   const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string; total: number; payment_id: string } | null>(null);
   const [pixError, setPixError] = useState('');
   const [paid, setPaid] = useState(false);
+  const [soldSet, setSoldSet] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    fetch('https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-vendidos')
+      .then(r => r.json())
+      .then((d: { numeros: string[] }) => {
+        setSoldSet(new Set(d.numeros.map(n => parseInt(n, 10))));
+      })
+      .catch(() => {});
+  }, []);
 
   const toggle = (i: number) => {
-    if (SOLD.has(i)) return;
+    if (soldSet.has(i)) return;
     setSelected(prev => {
       const next = new Set(prev);
       next.has(i) ? next.delete(i) : next.add(i);
@@ -72,7 +80,7 @@ export default function Rifa() {
       while (added < n && safety < 5000) {
         safety++;
         const k = Math.floor(Math.random() * TOTAL);
-        if (!SOLD.has(k) && !next.has(k)) { next.add(k); added++; }
+        if (!soldSet.has(k) && !next.has(k)) { next.add(k); added++; }
       }
       return next;
     });
@@ -83,12 +91,12 @@ export default function Rifa() {
     for (let i = 0; i < TOTAL; i++) {
       const id = fmt(i);
       if (search && !id.includes(search)) continue;
-      if (filter === 'free' && SOLD.has(i)) continue;
+      if (filter === 'free' && soldSet.has(i)) continue;
       if (filter === 'sel' && !selected.has(i)) continue;
       out.push(i);
     }
     return out;
-  }, [search, filter, selected]);
+  }, [search, filter, selected, soldSet]);
 
   const qty = selected.size;
   const total = qty * 0.05;
@@ -282,7 +290,7 @@ export default function Rifa() {
                 style={{ gap: 4, background: 'rgba(15,23,42,0.03)' }}
               >
                 {visible.map(i => {
-                  const sold = SOLD.has(i);
+                  const sold = soldSet.has(i);
                   const sel = selected.has(i);
                   return (
                     <div
