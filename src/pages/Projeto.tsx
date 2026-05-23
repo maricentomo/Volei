@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Ticket, Heart, Share2, Handshake } from 'lucide-react';
 
 const VALUES = ['Disciplina', 'Propósito', 'Pertencimento', 'Superação', 'Transformação'];
 const VIRTUES = [
@@ -188,7 +188,12 @@ export default function Projeto() {
             </h2>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
-            {['Número vendido', 'Apoio', 'Compartilhamento', 'Parceiro'].map((label, i) => (
+            {[
+              { label: 'Número vendido', icon: <Ticket size={32} className="text-brand-orange" /> },
+              { label: 'Apoio', icon: <Heart size={32} className="text-brand-orange" /> },
+              { label: 'Compartilhamento', icon: <Share2 size={32} className="text-brand-orange" /> },
+              { label: 'Parceiro', icon: <Handshake size={32} className="text-brand-orange" /> },
+            ].map((item, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 16 }}
@@ -197,8 +202,8 @@ export default function Projeto() {
                 transition={{ delay: i * 0.08 }}
                 className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center"
               >
-                <img src="/bolabola.png" alt="" className="w-12 h-12 mx-auto mb-3 object-contain" />
-                <p className="text-white font-black uppercase text-sm tracking-tight">Cada {label}</p>
+                <div className="flex justify-center mb-3">{item.icon}</div>
+                <p className="text-white font-black uppercase text-sm tracking-tight">Cada {item.label}</p>
                 <p className="text-brand-orange font-black uppercase text-sm mt-1">= Oportunidade</p>
               </motion.div>
             ))}
