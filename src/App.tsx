@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Atletas from './pages/Atletas';
+import Projeto from './pages/Projeto';
 import Patrocinadores from './pages/Patrocinadores';
 import Arrecadacao from './pages/Arrecadacao';
 import Rifa from './pages/Rifa';
@@ -36,6 +37,7 @@ function AnimatedRoutes() {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/atletas" element={<Atletas />} />
+          <Route path="/projeto" element={<Projeto />} />
           <Route path="/patrocinadores" element={<Patrocinadores />} />
           <Route path="/rifa" element={<Rifa />} />
           <Route path="/arrecadacao" element={<Arrecadacao />} />
@@ -61,7 +63,8 @@ function Layout({ children }: { children: React.ReactNode }) {
             <ul className="flex gap-6">
               {[
                 { name: 'Home', path: '/' },
-                { name: 'O Projeto', path: '/atletas' },
+                { name: 'O Projeto', path: '/projeto' },
+                { name: 'Equipe', path: '/atletas' },
                 { name: 'Rifa 🏆', path: '/rifa' },
                 { name: 'Ranking', path: '/ranking' },
                 { name: 'Parceiros', path: '/patrocinadores' },
@@ -152,7 +155,8 @@ function Layout({ children }: { children: React.ReactNode }) {
           <div>
             <h4 className="font-bold uppercase text-xs tracking-widest text-brand-orange mb-6">Navegação</h4>
             <ul className="flex flex-col gap-3 text-sm text-slate-400">
-              <li><Link to="/atletas" className="hover:text-white transition-colors">O Projeto</Link></li>
+              <li><Link to="/projeto" className="hover:text-white transition-colors">O Projeto</Link></li>
+              <li><Link to="/atletas" className="hover:text-white transition-colors">Equipe</Link></li>
               <li><Link to="/patrocinadores" className="hover:text-white transition-colors">Parceiros</Link></li>
             </ul>
           </div>
