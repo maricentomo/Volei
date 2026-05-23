@@ -210,7 +210,7 @@ export default function Rifa() {
                 <h3 className="text-white text-2xl font-black text-center leading-tight">iPhone 16 <span className="text-brand-orange">128GB</span></h3>
                 <p className="text-white/50 text-center font-mono text-xs uppercase tracking-widest mt-1 mb-1">ou</p>
                 <h3 className="text-white text-2xl font-black text-center leading-tight">R$ 4.000 <span className="text-brand-orange">no Pix</span></h3>
-                <div className="text-center font-mono text-[11px] tracking-widest uppercase text-brand-orange mt-3">Sorteio Loteria Federal · 19/07/2026</div>
+                <div className="text-center font-mono text-[11px] tracking-widest uppercase text-brand-orange mt-3">Sorteio · 30/06/2026 · 19h30</div>
               </div>
             </motion.div>
 
@@ -222,10 +222,10 @@ export default function Rifa() {
       <div className="bg-brand-orange border-t-2 border-b-2 border-navy py-5 px-4 md:px-8">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between gap-6">
           {[
-            { k: 'Valor por número', v: 'R$ 0,05'            },
+            { k: 'Valor por número', v: 'R$ 30,00'           },
             { k: 'Prêmio',           v: 'iPhone 16 · 128GB' },
-            { k: 'Data do sorteio',  v: '19/07/2026'        },
-            { k: 'Pagamento',        v: 'Pix · Cartão'      },
+            { k: 'Data do sorteio',  v: '30/06/2026'        },
+            { k: 'Pagamento',        v: 'Pix'               },
           ].map((c, i) => (
             <div key={i} className="flex flex-col gap-1">
               <span className="font-mono text-[11px] tracking-widest uppercase text-white/80">{c.k}</span>
@@ -442,7 +442,7 @@ export default function Rifa() {
               { n: '01', title: 'Escolha seus números',  body: 'Clique nos números que quiser, ou use o sorteador automático.' },
               { n: '02', title: 'Indique o atleta',      body: 'Aponte qual atleta deve receber o crédito. Ele entra no ranking de vendedores.' },
               { n: '03', title: 'Pague pelo Pix',        body: 'Você recebe o QR Code e a chave. Confirmação na hora.' },
-              { n: '04', title: 'Aguarde o sorteio',     body: 'Resultado pela Loteria Federal de 19/07. Cruze os dedos pelo iPhone.' },
+              { n: '04', title: 'Aguarde o sorteio',     body: 'Sorteio no dia 30/06/2026 às 19h30, após o treino oficial. Cruze os dedos pelo iPhone.' },
             ].map((s, i) => (
               <motion.div
                 key={i}
