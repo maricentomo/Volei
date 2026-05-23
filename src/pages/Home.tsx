@@ -25,6 +25,82 @@ function AnimatedNumber({ end, decimals = 0 }: { end: number; decimals?: number 
 }
 
 
+const PRO_PHOTOS = Array.from({ length: 15 }, (_, i) => `/fotos-pro/pro${i + 1}.jpg`);
+
+function ProGallery() {
+  const [idx, setIdx] = useState(0);
+  const prev = () => setIdx(i => (i - 1 + PRO_PHOTOS.length) % PRO_PHOTOS.length);
+  const next = () => setIdx(i => (i + 1) % PRO_PHOTOS.length);
+
+  return (
+    <div className="relative w-full max-w-md select-none">
+      {/* card com sombra laranja */}
+      <div
+        style={{
+          borderRadius: 16,
+          overflow: 'hidden',
+          boxShadow: '8px 8px 0px #ed6c15',
+          transition: 'box-shadow 0.2s ease',
+          aspectRatio: '4/3',
+          background: '#0f172a',
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={idx}
+            src={PRO_PHOTOS[idx]}
+            alt="Base Vôlei Louveira"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.3 }}
+            className="w-full h-full object-cover"
+          />
+        </AnimatePresence>
+      </div>
+
+      {/* Controles */}
+      <div className="flex items-center justify-between mt-5">
+        <button
+          onClick={prev}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-orange text-white flex items-center justify-center transition-colors text-lg font-black"
+        >
+          ‹
+        </button>
+
+        {/* Dots */}
+        <div className="flex gap-1.5">
+          {PRO_PHOTOS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              className="transition-all"
+              style={{
+                width: i === idx ? 20 : 6,
+                height: 6,
+                borderRadius: 999,
+                background: i === idx ? '#ed6c15' : 'rgba(255,255,255,0.25)',
+              }}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={next}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-orange text-white flex items-center justify-center transition-colors text-lg font-black"
+        >
+          ›
+        </button>
+      </div>
+
+      {/* Contador */}
+      <p className="text-center text-white/30 font-mono text-[10px] uppercase tracking-widest mt-3">
+        {String(idx + 1).padStart(2, '0')} / {PRO_PHOTOS.length}
+      </p>
+    </div>
+  );
+}
+
 const MARQUEE_ITEMS = Array(8).fill('A sua ajuda realiza um sonho');
 
 export default function Home() {
@@ -129,7 +205,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="bg-navy rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between min-h-[460px] shadow-2xl"
+              className="bg-navy rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between min-h-[560px] shadow-2xl"
             >
               {/* Rotating sticker */}
               <motion.div
@@ -141,6 +217,18 @@ export default function Home() {
               </motion.div>
 
               <div>
+                {/* Prize info */}
+                <div className="mb-6 pb-6 border-b border-white/10">
+                  <p className="text-white/50 font-mono text-[10px] uppercase tracking-[0.3em] mb-3">Ajude e concorra a</p>
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <p className="text-white font-black text-xl leading-tight">iPhone 16 <span className="text-brand-orange">128GB</span></p>
+                      <p className="text-white/40 font-mono text-[10px] uppercase tracking-widest mt-0.5">ou</p>
+                      <p className="text-white font-black text-xl leading-tight">R$ 4.000 <span className="text-white/50 font-mono text-sm font-normal normal-case tracking-normal">no Pix</span></p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-1.5 bg-brand-orange/20 border border-brand-orange/30 text-brand-orange px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest w-fit mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
                   Ao vivo
@@ -351,18 +439,14 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Right — atleta image flush to right edge */}
+            {/* Right — photo gallery */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="flex items-end justify-end"
+              className="flex items-center justify-center py-16 px-8"
             >
-              <img
-                src="/atleta.png"
-                alt="Atletas Base Vôlei Louveira"
-                className="w-full max-w-lg object-contain object-bottom"
-              />
+              <ProGallery />
             </motion.div>
 
           </div>

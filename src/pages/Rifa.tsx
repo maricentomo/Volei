@@ -154,7 +154,8 @@ export default function Rifa() {
               </div>
               <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
                 Ajude o time<br />e concorra a<br />
-                <span className="text-brand-orange">um iPhone 16.</span>
+                <span className="text-brand-orange">um iPhone 16</span><br />
+                <span className="text-white text-3xl md:text-4xl font-black">ou R$ 4.000 no Pix.</span>
               </h1>
               <p className="text-white/85 text-lg leading-relaxed max-w-lg mb-10">
                 Escolha quantos números quiser, indique seu atleta favorito e concorra ao prêmio. Cada R$ 0,05 leva o time mais perto da Taça Paraná.
@@ -199,23 +200,17 @@ export default function Rifa() {
                   PRÊMIO
                 </div>
 
-                {/* iPhone illustration */}
-                <div style={{ width: 200, height: 380, background: '#16161c', borderRadius: 38, border: '4px solid #2a2a30', position: 'relative', margin: '18px auto 22px', boxShadow: '0 30px 60px -20px rgba(0,0,0,.6)' }}>
-                  {/* Dynamic island */}
-                  <div style={{ position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)', width: 92, height: 26, background: '#000', borderRadius: 999 }} />
-                  {/* Screen */}
-                  <div style={{ position: 'absolute', inset: 8, borderRadius: 30, background: '#0e1a3a', overflow: 'hidden' }}>
-                    <div style={{ position: 'absolute', bottom: 30, left: 0, right: 0, textAlign: 'center', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 18, color: 'rgba(255,255,255,.7)' }}>iPhone 16</div>
-                  </div>
-                  {/* Camera module */}
-                  <div style={{ position: 'absolute', top: 90, left: 22, width: 64, height: 72, background: 'rgba(0,0,0,.4)', borderRadius: 22, boxShadow: '8px 10px 0 0 rgba(255,255,255,.04), inset 0 0 0 1px rgba(255,255,255,.08)' }}>
-                    <div style={{ position: 'absolute', top: 8, left: 8, width: 22, height: 22, borderRadius: '50%', background: '#222', boxShadow: 'inset 0 0 0 2px #1a1a1f' }} />
-                    <div style={{ position: 'absolute', bottom: 8, right: 8, width: 22, height: 22, borderRadius: '50%', background: '#222', boxShadow: 'inset 0 0 0 2px #1a1a1f' }} />
-                  </div>
-                </div>
+                {/* iPhone image */}
+                <img
+                  src="/iphone.png"
+                  alt="iPhone 16 128GB"
+                  className="w-48 mx-auto block my-4 drop-shadow-2xl"
+                />
 
-                <h3 className="text-white text-2xl font-black text-center leading-tight">iPhone 16<br /><span className="text-brand-orange">128 GB</span></h3>
-                <div className="text-center font-mono text-[11px] tracking-widest uppercase text-brand-orange mt-2">Sorteio Loteria Federal · 19/07/2026</div>
+                <h3 className="text-white text-2xl font-black text-center leading-tight">iPhone 16 <span className="text-brand-orange">128GB</span></h3>
+                <p className="text-white/50 text-center font-mono text-xs uppercase tracking-widest mt-1 mb-1">ou</p>
+                <h3 className="text-white text-2xl font-black text-center leading-tight">R$ 4.000 <span className="text-brand-orange">no Pix</span></h3>
+                <div className="text-center font-mono text-[11px] tracking-widest uppercase text-brand-orange mt-3">Sorteio Loteria Federal · 19/07/2026</div>
               </div>
             </motion.div>
 
@@ -592,27 +587,33 @@ export default function Rifa() {
 
               {/* Conteúdo scrollável */}
               <div className="overflow-y-auto flex-1 px-7 py-6 text-sm text-navy/80 leading-relaxed space-y-4">
-                <p className="font-black text-navy uppercase text-center text-base">Rifa Solidária — Time de Vôlei Sub-17 Louveira</p>
+                <p className="font-black text-navy uppercase text-center text-base">Regulamento Oficial — Rifa Solidária<br />Time de Vôlei Sub-17 Louveira</p>
 
                 {[
-                  { n: '1', t: 'Objetivo', c: 'Arrecadar recursos para custear as despesas do Time de Vôlei Masculino Sub-17 Louveira na participação da Taça Paraná, incluindo taxas de inscrição, transporte, alimentação, hospedagem e demais custos relacionados à competição.' },
-                  { n: '2', t: 'Organização', c: 'Campanha organizada EXCLUSIVAMENTE pelos atletas, familiares e apoiadores do Time de Vôlei Masculino Sub-17 Louveira (Comissão de Pais). Não tem relação direta com a Prefeitura do Município. Instagram: @basevoleilouveira.' },
+                  { n: '1', t: 'Objetivo', c: 'A presente rifa solidária tem como objetivo arrecadar recursos para custear as despesas do Time de Vôlei Masculino Sub-17 Louveira na participação da Taça Paraná, incluindo taxas de inscrição, transporte, alimentação, hospedagem e demais custos diversos relacionados à competição.' },
+                  { n: '2', t: 'Organização', c: 'A campanha é organizada exclusivamente pelos atletas, familiares e apoiadores do Time de Vôlei Masculino Sub-17 Louveira, que formam a Comissão de Pais. A organização e venda da rifa não tem relação direta com a Prefeitura do Município. Você poderá acompanhar o time no Instagram @basevoleilouveira.' },
                   { n: '3', t: 'Quantidade de Números', c: 'Serão disponibilizados 1.000 números para venda.' },
                   { n: '4', t: 'Valor', c: 'Cada número terá o valor de R$ 30,00 (trinta reais).' },
-                  { n: '5', t: 'Premiação', c: 'O ganhador receberá: 01 iPhone 16 128GB (Apple, iOS, 6,1 polegadas) OU R$ 4.000,00 via Pix. A opção será escolhida pelo ganhador no momento do contato oficial.' },
-                  { n: '6', t: 'Sorteio', c: 'Dia 30 de junho, às 19h30, após o treino oficial, caso todos os números tenham sido vendidos. Poderá ocorrer de forma presencial e/ou com transmissão pelas redes sociais (@basevoleilouveira).' },
-                  { n: '7', t: 'Entrega do Prêmio', c: 'O prêmio será entregue ao ganhador em até 07 (sete) dias corridos após o sorteio.' },
-                  { n: '8', t: 'Validação e Pagamento', c: 'O número somente será considerado válido após a confirmação do pagamento. Toda venda é direcionada para a conta do Mercado Pago em nome do time, administrada pela Comissão de Pais.' },
-                  { n: '9', t: 'Sobre a Venda dos Números', c: 'Caso todos os números não sejam vendidos até a data prevista, a organização poderá prorrogar a campanha ou realizar o sorteio proporcionalmente. Alterações serão divulgadas nas redes sociais.' },
-                  { n: '10', t: 'Gamificação', c: 'Os três melhores vendedores serão premiados: 1º lugar: Vale tênis R$ 500,00 · 2º lugar: Vale tênis R$ 300,00 · 3º lugar: Vale tênis R$ 200,00.' },
-                  { n: '11', t: 'Transparência e Boa-Fé', c: 'A organização conduzirá toda a campanha com transparência, ética e boa-fé, mantendo os participantes informados sobre o andamento das vendas e eventuais alterações.' },
-                  { n: '12', t: 'Disposições Finais', c: 'Ao participar da rifa, o comprador declara estar de acordo com todas as regras deste regulamento. Toda a arrecadação será integralmente destinada ao apoio esportivo do Time de Vôlei Masculino Sub-17 de Louveira.' },
+                  { n: '5', t: 'Premiação', c: 'O ganhador receberá: 01 iPhone 16 128GB (Apple, sistema iOS, armazenamento 128GB, tela 6,1 polegadas) — OU — R$ 4.000,00 (quatro mil reais) via Pix. A opção pelo prêmio será escolhida pelo ganhador no momento do contato oficial da organização.' },
+                  { n: '6', t: 'Sorteio', c: 'O sorteio será realizado no dia 30 de junho, às 19h30, após o treino oficial da equipe, caso todos os números tenham sido vendidos até a data. Poderá ocorrer de forma presencial e/ou com transmissão pelas redes sociais do time (@basevoleilouveira), garantindo transparência a todos os participantes.' },
+                  { n: '7', t: 'Entrega do Prêmio', c: 'O prêmio será entregue ao ganhador em até 07 (sete) dias corridos após a realização do sorteio.' },
+                  { n: '8', t: 'Validação e Pagamento', c: 'O número somente será considerado válido após a confirmação do pagamento. Para viabilizar o recebimento dos pagamentos, os valores da campanha serão direcionados para uma conta do Mercado Pago vinculada a Mariana Rodrigues Centomo, CPF 301.570.268-84, mãe e integrante da Comissão de Pais. A conta será utilizada exclusivamente como meio operacional de recebimento, com administração e prestação de contas à Comissão de Pais e ao Time. Todos os valores recebidos serão registrados e disponibilizados no Portal de Transparência da campanha.' },
+                  { n: '9', t: 'Sobre a Venda dos Números', c: 'Caso todos os números não sejam vendidos até a data prevista para o sorteio, a organização poderá: prorrogar a campanha e divulgar uma nova data de sorteio; ou realizar o sorteio proporcionalmente entre os números efetivamente vendidos. Qualquer alteração será previamente divulgada nas redes sociais oficiais (@basevoleilouveira) e comunicada aos participantes.' },
+                  { n: '10', t: 'Gamificação', c: 'Os atletas irão participar de uma campanha de melhor vendedor. Os três melhores vendedores serão premiados: 1º lugar: Vale tênis R$ 500,00 · 2º lugar: Vale tênis R$ 300,00 · 3º lugar: Vale tênis R$ 200,00.' },
+                  { n: '11', t: 'Divulgação', c: 'O resultado será divulgado nas redes sociais oficiais do time e comunicado diretamente ao vencedor.' },
+                  { n: '12', t: 'Transparência e Boa-Fé', c: 'A organização compromete-se a conduzir toda a campanha com transparência, ética e boa-fé, mantendo os participantes informados sobre o andamento das vendas, eventuais alterações de datas e resultado final da rifa.' },
+                  { n: '13', t: 'Disposições Finais', c: 'Ao participar da rifa, o comprador declara estar de acordo com todas as regras deste regulamento. Toda a arrecadação será integralmente destinada ao apoio esportivo do Time de Vôlei Masculino Sub-17 de Louveira.' },
                 ].map(item => (
                   <div key={item.n}>
                     <p className="font-black text-navy uppercase text-xs tracking-widest mb-1">{item.n}. {item.t}</p>
                     <p>{item.c}</p>
                   </div>
                 ))}
+
+                <div className="border border-navy/15 rounded-xl p-4 bg-[#0f172a]/03 space-y-2 mt-2">
+                  <p className="font-black text-navy uppercase text-xs tracking-widest">Toda a arrecadação será integralmente destinada ao apoio esportivo do Time de Vôlei Masculino Sub-17 de Louveira.</p>
+                  <p className="font-black text-brand-orange uppercase text-xs tracking-widest">Acompanhe nosso time no Instagram @basevoleilouveira</p>
+                </div>
               </div>
 
               {/* Footer com checkbox e botão */}

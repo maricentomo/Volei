@@ -1,0 +1,173 @@
+{
+  "name": "Campanha Volei - API Site",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "campanha-volei",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "n1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "config", "mode": "name" },
+        "options": {}
+      },
+      "id": "n2",
+      "name": "Ler config",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [460, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "atletas", "mode": "name" },
+        "options": {}
+      },
+      "id": "n3",
+      "name": "Ler atletas",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [680, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "rifas_avulsas", "mode": "name" },
+        "options": {}
+      },
+      "id": "n4",
+      "name": "Ler rifas_avulsas",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [900, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "cantina", "mode": "name" },
+        "options": {}
+      },
+      "id": "n5",
+      "name": "Ler cantina",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1120, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "doacoes", "mode": "name" },
+        "options": {}
+      },
+      "id": "n6",
+      "name": "Ler doacoes",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1340, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "despesas", "mode": "name" },
+        "options": {}
+      },
+      "id": "n7",
+      "name": "Ler despesas",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1560, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "orcamento_previsto", "mode": "name" },
+        "options": {}
+      },
+      "id": "n8",
+      "name": "Ler orcamento",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1780, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "rifa_principal", "mode": "name" },
+        "options": {}
+      },
+      "id": "n9",
+      "name": "Ler rifa_principal",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [2000, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "function toDate(val) {\n  if (!val) return '';\n  if (typeof val === 'number') {\n    const d = new Date(Date.UTC(1899, 11, 30) + val * 86400000);\n    return String(d.getUTCDate()).padStart(2,'0') + '/' + String(d.getUTCMonth()+1).padStart(2,'0') + '/' + d.getUTCFullYear();\n  }\n  if (typeof val === 'string' && val.includes('/')) return val;\n  if (typeof val === 'string') {\n    const d = new Date(val);\n    if (!isNaN(d.getTime())) return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();\n  }\n  return String(val);\n}\n\nconst configRows   = $('Ler config').all().map(i => i.json).filter(r => r.chave);\nconst atletasRows  = $('Ler atletas').all().map(i => i.json).filter(r => r.Camisa);\nconst rifasRows    = $('Ler rifas_avulsas').all().map(i => i.json).filter(r => r.id && r.total_arrecadado);\nconst cantinaRows  = $('Ler cantina').all().map(i => i.json).filter(r => r.id && r.total_arrecadado);\nconst doacoesRows  = $('Ler doacoes').all().map(i => i.json).filter(r => r.id && r.valor);\nconst despesasRows = $('Ler despesas').all().map(i => i.json).filter(r => r.id && r.valor);\nconst orcRows      = $('Ler orcamento').all().map(i => i.json).filter(r => r.descricao_custo && r.Valor_prev);\nconst rifaPRows    = $('Ler rifa_principal').all().map(i => i.json).filter(r => r.numero);\n\nconst cfg = {};\nfor (const r of configRows) cfg[r.chave] = r.valor;\nconst meta = Number(cfg.meta_total) || 40000;\nconst valorRifa = Number(cfg.valor_rifa) || 30;\n\nconst salesByAtleta = {};\nfor (const r of rifaPRows) {\n  if (r.num_atleta) {\n    const k = String(r.num_atleta);\n    salesByAtleta[k] = (salesByAtleta[k] || 0) + 1;\n  }\n}\n\nconst atletas = atletasRows.map(r => ({\n  num: String(r.Camisa).padStart(2, '0'),\n  name: String(r.nome_completo || ''),\n  short: String(r.short || ''),\n  pos: String(r.pos || ''),\n  photo: (r.photo && r.photo !== 'sem foto') ? '/Fotos_Atletas/' + r.photo : null,\n  sales: salesByAtleta[String(r.Camisa)] || 0\n}));\n\nconst rifasTotal   = rifasRows.reduce((s, r) => s + Number(r.total_arrecadado || 0), 0);\nconst cantinaTotal = cantinaRows.reduce((s, r) => s + Number(r.total_arrecadado || 0), 0);\nconst doacoesTotal = doacoesRows.reduce((s, r) => s + Number(r.valor || 0), 0);\nconst rifaPTotal   = rifaPRows.length * valorRifa;\n\nconst receitas = [\n  { label: 'Rifa Principal', sub: rifaPRows.length + ' números vendidos', valor: rifaPTotal },\n  { label: 'Rifas Avulsas', sub: rifasRows.length + ' rifas realizadas', valor: rifasTotal },\n  { label: 'Cantina', sub: cantinaRows.length + ' evento(s)', valor: cantinaTotal },\n  { label: 'Doações', sub: doacoesRows.length + ' doação(ões)', valor: doacoesTotal }\n];\n\nconst orcamento = orcRows.map(r => ({\n  label: String(r.descricao_custo),\n  sub: '',\n  valor: Number(r.Valor_prev)\n}));\n\nconst extrato = [];\nfor (const r of rifasRows) {\n  extrato.push({ data: toDate(r.data), desc: r.nome_rifa + ' · ' + (r.bilhetes_vendidos || 0) + ' bilhetes', cat: 'RIFA AVULSA', tipo: 'ENTRADA', valor: Number(r.total_arrecadado) });\n}\nfor (const r of cantinaRows) {\n  extrato.push({ data: toDate(r.data), desc: String(r.evento || 'Cantina'), cat: 'CANTINA', tipo: 'ENTRADA', valor: Number(r.total_arrecadado) });\n}\nfor (const r of doacoesRows) {\n  extrato.push({ data: toDate(r.data), desc: 'Doação · ' + (r.doador_nome || 'Anônimo'), cat: 'DOAÇÃO', tipo: 'ENTRADA', valor: Number(r.valor) });\n}\nfor (const r of despesasRows) {\n  extrato.push({ data: toDate(r.data), desc: String(r.descricao || r.categoria || 'Despesa'), cat: String(r.categoria || 'DESPESA').toUpperCase(), tipo: 'SAÍDA', valor: Number(r.valor) });\n}\n\nextrato.sort(function(a, b) {\n  function p(s) {\n    if (!s) return 0;\n    const parts = s.split('/');\n    return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0])).getTime();\n  }\n  return p(b.data) - p(a.data);\n});\n\nconst arrecadado = receitas.reduce((s, r) => s + r.valor, 0);\nconst gasto = despesasRows.reduce((s, r) => s + Number(r.valor || 0), 0);\n\nreturn [{ json: { meta, arrecadado, gasto, atletas, receitas, orcamento, extrato } }];"
+      },
+      "id": "n10",
+      "name": "Montar JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2220, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "firstEntryJson",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "*" },
+              { "name": "Content-Type", "value": "application/json" }
+            ]
+          }
+        }
+      },
+      "id": "n11",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2440, 300]
+    }
+  ],
+  "connections": {
+    "Webhook":          { "main": [[{ "node": "Ler config",        "type": "main", "index": 0 }]] },
+    "Ler config":       { "main": [[{ "node": "Ler atletas",       "type": "main", "index": 0 }]] },
+    "Ler atletas":      { "main": [[{ "node": "Ler rifas_avulsas", "type": "main", "index": 0 }]] },
+    "Ler rifas_avulsas":{ "main": [[{ "node": "Ler cantina",       "type": "main", "index": 0 }]] },
+    "Ler cantina":      { "main": [[{ "node": "Ler doacoes",       "type": "main", "index": 0 }]] },
+    "Ler doacoes":      { "main": [[{ "node": "Ler despesas",      "type": "main", "index": 0 }]] },
+    "Ler despesas":     { "main": [[{ "node": "Ler orcamento",     "type": "main", "index": 0 }]] },
+    "Ler orcamento":    { "main": [[{ "node": "Ler rifa_principal","type": "main", "index": 0 }]] },
+    "Ler rifa_principal":{ "main": [[{ "node": "Montar JSON",      "type": "main", "index": 0 }]] },
+    "Montar JSON":      { "main": [[{ "node": "Responder",         "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null
+}
