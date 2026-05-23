@@ -111,7 +111,8 @@ function Layout({ children }: { children: React.ReactNode }) {
               <ul className="flex flex-col gap-4 p-4">
                 {[
                   { name: 'Home', path: '/' },
-                  { name: 'O Projeto', path: '/atletas' },
+                  { name: 'O Projeto', path: '/projeto' },
+                  { name: 'Equipe', path: '/atletas' },
                   { name: 'Rifa 🏆', path: '/rifa' },
                   { name: 'Ranking', path: '/ranking' },
                   { name: 'Parceiros', path: '/patrocinadores' },
