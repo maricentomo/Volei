@@ -290,7 +290,7 @@ export default function Home() {
                   alt=""
                   animate={{ rotate: 360 }}
                   transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-                  className="absolute w-[380px] h-[380px] pointer-events-none select-none"
+                  className="absolute w-[280px] h-[280px] md:w-[380px] md:h-[380px] pointer-events-none select-none"
                   style={{ mixBlendMode: 'screen', opacity: 0.55 }}
                 />
                 <img
