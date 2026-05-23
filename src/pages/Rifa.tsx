@@ -101,7 +101,7 @@ export default function Rifa() {
   }, [search, filter, selected, soldSet]);
 
   const qty = selected.size;
-  const total = qty * 0.05;
+  const total = qty * 30;
 
   const finalize = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -158,7 +158,7 @@ export default function Rifa() {
                 <span className="text-white text-3xl md:text-4xl font-black">ou R$ 4.000 no Pix.</span>
               </h1>
               <p className="text-white/85 text-lg leading-relaxed max-w-lg mb-10">
-                Escolha quantos números quiser, indique seu atleta favorito e concorra ao prêmio. Cada R$ 0,05 leva o time mais perto da Taça Paraná.
+                Escolha quantos números quiser, indique seu atleta favorito e concorra ao prêmio. Cada R$ 30,00 leva o time mais perto da Taça Paraná.
               </p>
 
               {/* Progress bar — igual à Home */}
@@ -326,7 +326,7 @@ export default function Rifa() {
               <div className="flex justify-between items-center mb-5">
                 <h3 className="font-black text-navy uppercase text-2xl tracking-tight">Seu pedido</h3>
                 <span className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> 0,05 p/ teste
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> R$ 30 / número
                 </span>
               </div>
 
