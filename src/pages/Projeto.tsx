@@ -129,7 +129,7 @@ export default function Projeto() {
       {/* ── FOTOS GRID ───────────────────────────────────────── */}
       <section className="py-16 px-4 md:px-8 bg-white">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
-          {['/fotos-pro/0.jpeg', '/fotos-pro/3.jpeg', '/fotos-pro/5.jpeg'].map((src, i) => (
+          {['/fotos-pro/0.jpeg', '/fotos-pro/3.jpeg', '/fotos-pro/4.jpeg'].map((src, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, scale: 0.96 }}
