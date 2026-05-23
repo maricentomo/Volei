@@ -12,7 +12,7 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300]
+      "position": [240, 560]
     },
     {
       "parameters": {
@@ -25,7 +25,7 @@
       "name": "Ler config",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [460, 300],
+      "position": [500, 100],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -39,7 +39,7 @@
       "name": "Ler atletas",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [680, 300],
+      "position": [500, 260],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -53,7 +53,7 @@
       "name": "Ler rifas_avulsas",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [900, 300],
+      "position": [500, 420],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -67,7 +67,7 @@
       "name": "Ler cantina",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [1120, 300],
+      "position": [500, 580],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -81,7 +81,7 @@
       "name": "Ler doacoes",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [1340, 300],
+      "position": [500, 740],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -95,7 +95,7 @@
       "name": "Ler despesas",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [1560, 300],
+      "position": [500, 900],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -109,7 +109,7 @@
       "name": "Ler orcamento",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [1780, 300],
+      "position": [500, 1060],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -123,7 +123,7 @@
       "name": "Ler rifa_principal",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [2000, 300],
+      "position": [500, 1220],
       "credentials": { "googleSheetsOAuth2Api": { "id": "", "name": "Google Sheets account 2" } }
     },
     {
@@ -135,7 +135,7 @@
       "name": "Montar JSON",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2220, 300]
+      "position": [820, 660]
     },
     {
       "parameters": {
@@ -153,20 +153,29 @@
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [2440, 300]
+      "position": [1060, 660]
     }
   ],
   "connections": {
-    "Webhook":          { "main": [[{ "node": "Ler config",        "type": "main", "index": 0 }]] },
-    "Ler config":       { "main": [[{ "node": "Ler atletas",       "type": "main", "index": 0 }]] },
-    "Ler atletas":      { "main": [[{ "node": "Ler rifas_avulsas", "type": "main", "index": 0 }]] },
-    "Ler rifas_avulsas":{ "main": [[{ "node": "Ler cantina",       "type": "main", "index": 0 }]] },
-    "Ler cantina":      { "main": [[{ "node": "Ler doacoes",       "type": "main", "index": 0 }]] },
-    "Ler doacoes":      { "main": [[{ "node": "Ler despesas",      "type": "main", "index": 0 }]] },
-    "Ler despesas":     { "main": [[{ "node": "Ler orcamento",     "type": "main", "index": 0 }]] },
-    "Ler orcamento":    { "main": [[{ "node": "Ler rifa_principal","type": "main", "index": 0 }]] },
-    "Ler rifa_principal":{ "main": [[{ "node": "Montar JSON",      "type": "main", "index": 0 }]] },
-    "Montar JSON":      { "main": [[{ "node": "Responder",         "type": "main", "index": 0 }]] }
+    "Webhook":          { "main": [[
+      { "node": "Ler config",        "type": "main", "index": 0 },
+      { "node": "Ler atletas",       "type": "main", "index": 0 },
+      { "node": "Ler rifas_avulsas", "type": "main", "index": 0 },
+      { "node": "Ler cantina",       "type": "main", "index": 0 },
+      { "node": "Ler doacoes",       "type": "main", "index": 0 },
+      { "node": "Ler despesas",      "type": "main", "index": 0 },
+      { "node": "Ler orcamento",     "type": "main", "index": 0 },
+      { "node": "Ler rifa_principal","type": "main", "index": 0 }
+    ]] },
+    "Ler config":        { "main": [[{ "node": "Montar JSON", "type": "main", "index": 0 }]] },
+    "Ler atletas":       { "main": [[{ "node": "Montar JSON", "type": "main", "index": 1 }]] },
+    "Ler rifas_avulsas": { "main": [[{ "node": "Montar JSON", "type": "main", "index": 2 }]] },
+    "Ler cantina":       { "main": [[{ "node": "Montar JSON", "type": "main", "index": 3 }]] },
+    "Ler doacoes":       { "main": [[{ "node": "Montar JSON", "type": "main", "index": 4 }]] },
+    "Ler despesas":      { "main": [[{ "node": "Montar JSON", "type": "main", "index": 5 }]] },
+    "Ler orcamento":     { "main": [[{ "node": "Montar JSON", "type": "main", "index": 6 }]] },
+    "Ler rifa_principal":{ "main": [[{ "node": "Montar JSON", "type": "main", "index": 7 }]] },
+    "Montar JSON":       { "main": [[{ "node": "Responder",   "type": "main", "index": 0 }]] }
   },
   "settings": { "executionOrder": "v1" },
   "staticData": null
