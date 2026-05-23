@@ -312,7 +312,7 @@ export default function Rifa() {
             </div>
 
             {/* Order panel */}
-            <aside className="bg-white border border-[#0f172a]/10 rounded-2xl p-7 shadow-sm" style={{ position: 'sticky', top: 100 }}>
+            <aside className="bg-white border border-[#0f172a]/10 rounded-2xl p-7 shadow-sm lg:sticky lg:top-[100px]">
             {paid ? (
               <div className="flex flex-col items-center text-center py-6 gap-5">
                 <div className="w-20 h-20 rounded-full bg-brand-orange flex items-center justify-center text-white text-[44px]">✓</div>
@@ -398,7 +398,7 @@ export default function Rifa() {
                   <select
                     required value={form.athlete}
                     onChange={e => setForm(prev => ({ ...prev, athlete: e.target.value }))}
-                    className="w-full px-4 py-3 rounded-xl border border-[#0f172a]/15 bg-white text-navy text-sm outline-none focus:border-brand-orange transition-colors appearance-none"
+                    className="w-full px-4 py-3 rounded-xl border border-[#0f172a]/15 bg-white text-navy text-sm outline-none focus:border-brand-orange transition-colors"
                   >
                     <option value="">Selecione um atleta…</option>
                     {ATHLETES.map(a => (
