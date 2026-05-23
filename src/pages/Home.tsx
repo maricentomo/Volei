@@ -25,13 +25,13 @@ function AnimatedNumber({ end, decimals = 0 }: { end: number; decimals?: number 
 }
 
 
-const PRO_PHOTOS = Array.from({ length: 15 }, (_, i) => `/fotos-pro/pro${i + 1}.jpg`);
+const PRO_PHOTOS = Array.from({ length: 8 }, (_, i) => `/fotos-pro/${i}.jpeg`);
 
 function ProGallery() {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i + 1) % PRO_PHOTOS.length), 3500);
+    const t = setInterval(() => setIdx(i => (i + 1) % PRO_PHOTOS.length), 2000);
     return () => clearInterval(t);
   }, []);
 
