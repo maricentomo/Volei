@@ -33,7 +33,20 @@ export default function Home() {
   const atual    = data?.arrecadado ?? 0;
   const progresso = (atual / meta) * 100;
 
-  const [selectedAmount, setSelectedAmount] = useState(100);
+  const [centavosInt, setCentavosInt] = useState(10000);
+  const selectedAmount = centavosInt / 100;
+  const setSelectedAmount = (v: number) => setCentavosInt(Math.round(v * 100));
+
+  const handleCentavosKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key >= '0' && e.key <= '9') {
+      e.preventDefault();
+      const next = centavosInt * 10 + parseInt(e.key);
+      if (next <= 9999999) setCentavosInt(next);
+    } else if (e.key === 'Backspace') {
+      e.preventDefault();
+      setCentavosInt(Math.floor(centavosInt / 10));
+    }
+  };
 
   const [showDonationForm, setShowDonationForm] = useState(false);
   const [donationForm, setDonationForm] = useState({ name: '', email: '', cpf: '' });
@@ -94,10 +107,9 @@ export default function Home() {
               </h1>
 
               <p className="text-[#0f172a]/70 text-lg mb-4 max-w-xl leading-relaxed">
-              Contribua para que os atletas da Base Vôlei Louveira Sub-17 disputem a Taça Paraná — uma das maiores competições de voleibol de base do Brasil — em São José dos Pinhais e Curitiba.
-Mais do que uma competição, essa experiência representa crescimento, amadurecimento e memórias que esses jovens levarão para o resto da vida.
-Porque talvez, daqui a alguns anos, eles não se lembrem do placar de todos os jogos…
-Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho ainda estava começando              </p>
+                Contribua para que os atletas da Base Vôlei Louveira Sub-17 disputem a Taça Paraná — uma das maiores competições de voleibol de base do Brasil. Mais do que uma competição, essa experiência representa crescimento, amadurecimento e memórias que esses jovens levarão para o resto da vida.
+                Porque talvez, daqui a alguns anos, eles não se lembrem do placar de todos os jogos… Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho ainda estava começando.
+              </p>
               <p className="text-[#0f172a]/70 text-base mb-8 max-w-xl leading-relaxed">
                 <span className="font-bold text-navy">E precisamos da sua ajuda para fazer isso possível.</span>
               </p>
@@ -392,15 +404,15 @@ Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho
 
               <div className="flex items-center gap-3 mb-7">
                 <span className="text-[11px] font-black uppercase tracking-widest text-[#0f172a]/50 whitespace-nowrap">ou doe qualquer valor</span>
-                <div className="flex items-center border-2 border-[#0f172a]/20 rounded-full px-4 py-2 bg-white focus-within:border-brand-orange transition-colors flex-1 max-w-[180px]">
+                <div className="flex items-center border-2 border-[#0f172a]/20 rounded-full px-4 py-2 bg-white focus-within:border-brand-orange transition-colors flex-1 max-w-[200px]">
                   <span className="font-black text-navy/50 mr-1">R$</span>
                   <input
-                    type="number"
-                    min={1}
-                    placeholder="0"
-                    value={selectedAmount}
-                    onChange={e => setSelectedAmount(Number(e.target.value) || 0)}
-                    className="w-full font-black text-navy text-base outline-none bg-transparent"
+                    type="text"
+                    inputMode="numeric"
+                    readOnly
+                    value={(centavosInt / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    onKeyDown={handleCentavosKey}
+                    className="w-full font-black text-navy text-base outline-none bg-transparent cursor-text"
                   />
                 </div>
               </div>
@@ -467,7 +479,7 @@ Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho
                   </div>
                   <div className="text-center">
                     <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0f172a]/50 mb-2">Pague pelo app</div>
-                    <div className="text-4xl font-black uppercase tracking-tighter text-navy">R$ {selectedAmount.toLocaleString('pt-BR')},00</div>
+                    <div className="text-4xl font-black uppercase tracking-tighter text-navy">R$ {selectedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                   </div>
                 </>
               )}
@@ -502,7 +514,7 @@ Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho
               </div>
               <div className="bg-brand-orange/10 border border-brand-orange/20 rounded-xl p-4 mb-6 text-center">
                 <div className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Valor da doação</div>
-                <div className="text-3xl font-black text-navy">R$ {selectedAmount.toLocaleString('pt-BR')},00</div>
+                <div className="text-3xl font-black text-navy">R$ {selectedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </div>
               <form onSubmit={finalizeDonation} className="flex flex-col gap-4">
                 {[
