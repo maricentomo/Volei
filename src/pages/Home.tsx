@@ -1,5 +1,5 @@
-import { ArrowRight, Copy, Check, Handshake } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ArrowRight, Copy, Handshake, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
 import { useInView } from 'motion/react';
@@ -33,14 +33,39 @@ export default function Home() {
   const atual    = data?.arrecadado ?? 0;
   const progresso = (atual / meta) * 100;
 
-  const [copied, setCopied] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(100);
-  const pixKey = '12.345.678/0001-90';
 
-  const handleCopy = () => {
-    navigator.clipboard?.writeText(pixKey);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
+  const [showDonationForm, setShowDonationForm] = useState(false);
+  const [donationForm, setDonationForm] = useState({ name: '', email: '', cpf: '' });
+  const [donationLoading, setDonationLoading] = useState(false);
+  const [donationPixData, setDonationPixData] = useState<{ qr_code: string; qr_code_base64: string; total: number } | null>(null);
+  const [donationError, setDonationError] = useState('');
+  const [donationPaid, setDonationPaid] = useState(false);
+
+  const finalizeDonation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDonationLoading(true);
+    setDonationError('');
+    try {
+      const res = await fetch('https://bot-n8n.k474gt.easypanel.host/webhook/doacao-criar-pix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          total: selectedAmount,
+          nome: donationForm.name,
+          email: donationForm.email,
+          cpf: donationForm.cpf.replace(/\D/g, ''),
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || json.erro) throw new Error(json.mensagem || 'Erro ao gerar Pix');
+      setDonationPixData(json);
+      setShowDonationForm(false);
+    } catch (err: unknown) {
+      setDonationError(err instanceof Error ? err.message : 'Erro ao conectar. Tente novamente.');
+    } finally {
+      setDonationLoading(false);
+    }
   };
 
   return (
@@ -69,8 +94,10 @@ export default function Home() {
               </h1>
 
               <p className="text-[#0f172a]/70 text-lg mb-4 max-w-xl leading-relaxed">
-                O Time de Vôlei Masculino Sub-17 Louveira sonha em disputar a Taça Paraná. Um campeonato que reúne milhares de atletas, equipes tradicionais e jovens talentos de diferentes estados e países, proporcionando não apenas jogos de alto nível, mas experiências que acompanham esses atletas para o resto da vida.
-              </p>
+              Contribua para que os atletas da Base Vôlei Louveira Sub-17 disputem a Taça Paraná — uma das maiores competições de voleibol de base do Brasil — em São José dos Pinhais e Curitiba.
+Mais do que uma competição, essa experiência representa crescimento, amadurecimento e memórias que esses jovens levarão para o resto da vida.
+Porque talvez, daqui a alguns anos, eles não se lembrem do placar de todos os jogos…
+Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho ainda estava começando              </p>
               <p className="text-[#0f172a]/70 text-base mb-8 max-w-xl leading-relaxed">
                 <span className="font-bold text-navy">E precisamos da sua ajuda para fazer isso possível.</span>
               </p>
@@ -347,8 +374,8 @@ export default function Home() {
                 Escolha um valor e transfira direto. Toda doação é registrada publicamente na nossa página de Transparência.
               </p>
 
-              <div className="flex flex-wrap gap-3 mb-7">
-                {[30, 60, 100, 250, 500].map(v => (
+              <div className="flex flex-wrap gap-3 mb-4">
+                {[5, 10, 15, 30, 50, 100, 250, 500].map(v => (
                   <button
                     key={v}
                     onClick={() => setSelectedAmount(v)}
@@ -363,15 +390,27 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className="flex items-center gap-3 bg-white border-2 border-dashed border-[#0f172a]/20 rounded-xl p-4 mb-4">
-                <div className="flex-1">
-                  <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0f172a]/50 mb-1">Chave Pix (CNPJ)</div>
-                  <strong className="font-mono text-base text-navy">{pixKey}</strong>
+              <div className="flex items-center gap-3 mb-7">
+                <span className="text-[11px] font-black uppercase tracking-widest text-[#0f172a]/50 whitespace-nowrap">ou doe qualquer valor</span>
+                <div className="flex items-center border-2 border-[#0f172a]/20 rounded-full px-4 py-2 bg-white focus-within:border-brand-orange transition-colors flex-1 max-w-[180px]">
+                  <span className="font-black text-navy/50 mr-1">R$</span>
+                  <input
+                    type="number"
+                    min={1}
+                    placeholder="0"
+                    value={selectedAmount}
+                    onChange={e => setSelectedAmount(Number(e.target.value) || 0)}
+                    className="w-full font-black text-navy text-base outline-none bg-transparent"
+                  />
                 </div>
-                <button onClick={handleCopy} className="flex items-center gap-2 bg-navy text-white px-4 py-2.5 rounded-lg font-black uppercase tracking-wide text-xs hover:bg-brand-orange transition-colors flex-shrink-0">
-                  {copied ? <><Check size={14} /> Copiado!</> : <><Copy size={14} /> Copiar</>}
-                </button>
               </div>
+
+              <button
+                onClick={() => setShowDonationForm(true)}
+                className="w-full bg-brand-orange text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-navy transition-colors mb-5"
+              >
+                Gerar QR Code Pix →
+              </button>
               <p className="text-sm text-[#0f172a]/70">
                 Beneficiário: <strong className="text-navy">Base Vôlei Louveira — Associação Esportiva</strong> · Banco Sicredi.<br />
                 Toda movimentação é publicada na nossa{' '}
@@ -386,28 +425,116 @@ export default function Home() {
               transition={{ delay: 0.2 }}
               className="bg-[#0f172a]/5 border border-[#0f172a]/10 rounded-2xl p-8"
             >
-              <div className="bg-white p-6 rounded-xl border border-[#0f172a]/10 mb-6">
-                <div
-                  className="aspect-square w-full max-w-[240px] mx-auto rounded-xl overflow-hidden relative"
-                  style={{ background: 'repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 24px 24px' }}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-white p-2 rounded-lg">
-                      <img src="/logo.png" alt="logo" className="h-8 w-auto" />
+              {donationPaid ? (
+                <div className="flex flex-col items-center text-center py-8 gap-4">
+                  <div className="w-20 h-20 rounded-full bg-brand-orange flex items-center justify-center text-white text-[44px]">✓</div>
+                  <h3 className="font-black text-navy uppercase text-xl tracking-tight">Obrigado pela doação!</h3>
+                  <p className="text-navy/60 text-sm leading-relaxed">Seu Pix foi gerado. Confirme o pagamento no seu banco e você receberá um e-mail de confirmação.</p>
+                  <button onClick={() => { setDonationPaid(false); setDonationPixData(null); }} className="px-6 py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors">
+                    Fazer outra doação
+                  </button>
+                </div>
+              ) : donationPixData ? (
+                <>
+                  <div className="bg-white p-4 rounded-xl border border-[#0f172a]/10 mb-5">
+                    <img
+                      src={`data:image/png;base64,${donationPixData.qr_code_base64}`}
+                      alt="QR Code Pix"
+                      className="w-full max-w-[220px] mx-auto block rounded-lg"
+                    />
+                  </div>
+                  <div className="text-center mb-4">
+                    <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0f172a]/50 mb-1">Pague pelo app</div>
+                    <div className="text-3xl font-black uppercase tracking-tighter text-navy">R$ {donationPixData.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                  </div>
+                  <button
+                    onClick={() => { navigator.clipboard?.writeText(donationPixData.qr_code); }}
+                    className="w-full py-3 border-2 border-[#0f172a]/20 rounded-xl font-black uppercase tracking-widest text-sm text-navy hover:border-brand-orange hover:text-brand-orange transition-colors mb-3"
+                  >
+                    <Copy size={14} className="inline mr-2" /> Copiar código Pix
+                  </button>
+                  <button onClick={() => setDonationPaid(true)} className="w-full py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors">
+                    Já paguei ✓
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="bg-white p-6 rounded-xl border border-[#0f172a]/10 mb-6 flex items-center justify-center" style={{ minHeight: 240 }}>
+                    <div className="text-center text-navy/30">
+                      <div className="text-6xl mb-3">⬜</div>
+                      <div className="font-black uppercase text-sm tracking-widest">QR Code aparece aqui</div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0f172a]/50 mb-2">Pague pelo app</div>
-                <div className="text-4xl font-black uppercase tracking-tighter text-navy">
-                  R$ {selectedAmount.toLocaleString('pt-BR')},00
-                </div>
-              </div>
+                  <div className="text-center">
+                    <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0f172a]/50 mb-2">Pague pelo app</div>
+                    <div className="text-4xl font-black uppercase tracking-tighter text-navy">R$ {selectedAmount.toLocaleString('pt-BR')},00</div>
+                  </div>
+                </>
+              )}
             </motion.div>
           </div>
         </div>
       </section>
+
+      {/* ── Modal formulário doação ───────────────────────────────────────── */}
+      <AnimatePresence>
+        {showDonationForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(4px)' }}
+            onClick={() => setShowDonationForm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              onClick={e => e.stopPropagation()}
+              className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-black text-navy uppercase text-xl tracking-tight">Seus dados</h3>
+                <button onClick={() => setShowDonationForm(false)} className="text-navy/40 hover:text-navy">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="bg-brand-orange/10 border border-brand-orange/20 rounded-xl p-4 mb-6 text-center">
+                <div className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Valor da doação</div>
+                <div className="text-3xl font-black text-navy">R$ {selectedAmount.toLocaleString('pt-BR')},00</div>
+              </div>
+              <form onSubmit={finalizeDonation} className="flex flex-col gap-4">
+                {[
+                  { id: 'name',  label: 'Seu nome completo', type: 'text',  placeholder: 'Ana Silva'         },
+                  { id: 'email', label: 'E-mail',             type: 'email', placeholder: 'ana@email.com'     },
+                  { id: 'cpf',   label: 'CPF',                type: 'text',  placeholder: '000.000.000-00'    },
+                ].map(f => (
+                  <div key={f.id}>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-navy/60 mb-1">{f.label}</label>
+                    <input
+                      type={f.type}
+                      required
+                      placeholder={f.placeholder}
+                      value={donationForm[f.id as keyof typeof donationForm]}
+                      onChange={e => setDonationForm(prev => ({ ...prev, [f.id]: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-xl border border-[#0f172a]/15 font-mono text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-[#ed6c15]/20"
+                    />
+                  </div>
+                ))}
+                {donationError && <p className="text-red-500 text-sm font-bold">{donationError}</p>}
+                <button
+                  type="submit"
+                  disabled={donationLoading}
+                  className="w-full bg-brand-orange text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-navy transition-colors disabled:opacity-50 mt-2"
+                >
+                  {donationLoading ? 'Gerando...' : 'Gerar QR Code Pix →'}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── SEJA UM PARCEIRO ─────────────────────────────────────────────── */}
       <section className="bg-navy py-20 px-4 md:px-8">
