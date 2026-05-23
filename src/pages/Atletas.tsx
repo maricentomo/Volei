@@ -42,16 +42,15 @@ export default function Atletas() {
     <div className="bg-white">
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <header className="bg-navy text-white overflow-hidden" style={{ minHeight: 420 }}>
-        <div style={{ display: 'flex', minHeight: 420 }}>
+      <header className="bg-navy text-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-16 md:py-20">
 
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            style={{ width: '50%', paddingLeft: 'max(32px, calc((100vw - 1280px) / 2 + 32px))', paddingRight: '48px', paddingTop: '64px', paddingBottom: '64px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
           >
-            <div style={{ display: 'flex', gap: 10, marginBottom: 22 }}>
+            <div className="flex flex-wrap gap-2 mb-6">
               <span className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Sub-17 Masculino
               </span>
@@ -71,18 +70,15 @@ export default function Atletas() {
             initial={{ opacity: 0, x: 24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="hidden lg:flex items-center justify-center"
-            style={{ width: '50%', padding: '40px 48px 40px 24px' }}
+            className="flex items-center justify-center"
           >
             <div
-              className="group"
-              style={{ width: '70%', borderRadius: 16, overflow: 'hidden', boxShadow: '8px 8px 0px #ed6c15', transition: 'transform 0.2s ease, box-shadow 0.2s ease', cursor: 'pointer' }}
+              className="w-full max-w-sm"
+              style={{ borderRadius: 16, overflow: 'hidden', boxShadow: '8px 8px 0px #ed6c15', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translate(8px,8px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0px 0px 0px #ed6c15'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translate(0,0)'; (e.currentTarget as HTMLElement).style.boxShadow = '8px 8px 0px #ed6c15'; }}
             >
-              <div style={{ width: '100%', aspectRatio: '16/10' }}>
-                <img src="/time.png" alt="Time Base Vôlei Louveira" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
-              </div>
+              <img src="/time.png" alt="Time Base Vôlei Louveira" className="w-full object-cover" style={{ aspectRatio: '16/10' }} />
             </div>
           </motion.div>
 
@@ -118,19 +114,19 @@ export default function Atletas() {
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-4">Nossa história</p>
             <h2 className="text-4xl md:text-6xl font-black text-navy uppercase tracking-tighter leading-tight">
-              De uma quadra<br />cedida pra<br />competição<br />nacional.
+              Formando atletas.<br /><span className="text-brand-orange">Inspirando futuros</span><br />campeões.
             </h2>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-            <p className="text-navy/75 text-lg leading-relaxed mb-5" style={{ fontSize: 18 }}>
-              O Base Vôlei Louveira nasceu em 2021 vinculado à Secretaria de Esportes da Prefeitura Municipal. Com estrutura simples e muito trabalho, o projeto cresceu de um grupo de jovens para mais de 80 atletas distribuídos em categorias de formação e adulto.
+            <p className="text-navy/75 text-lg leading-relaxed mb-5">
+              O Time Masculino Sub-17 encontrou no esporte muito mais do que competição: encontrou disciplina, propósito, amadurecimento, superação e transformação.
             </p>
             <p className="text-navy/65 text-base leading-relaxed mb-5">
-              O time é mantido pela Prefeitura e por uma rede de apoiadores que acredita que o esporte forma gente. Cada centavo arrecadado vira treino, viagem, passagem e prato cheio pra esses atletas.
+              Agora, o time se mobiliza para disputar a Taça Paraná — uma das maiores competições de voleibol de base do Brasil e da América Latina. Mais do que um campeonato, essa experiência representa oportunidade, crescimento e memórias que podem marcar esses jovens para o resto da vida.
             </p>
             <p className="text-navy/65 text-base leading-relaxed mb-8">
-              A Taça Paraná é o maior degrau que já tentamos subir. Não é só sobre vencer — é sobre mostrar que a base de Louveira chega lá.
+              O projeto Base Vôlei Louveira nasceu em 2021, vinculado à Prefeitura Municipal de Louveira, e hoje reúne diversas categorias de formação esportiva. Mas a participação da categoria Sub-17 Masculino nessa importante competição depende também de uma grande mobilização fora das quadras.
             </p>
 
             <div className="bg-navy rounded-2xl p-8">

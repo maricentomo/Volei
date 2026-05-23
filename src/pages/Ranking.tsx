@@ -329,10 +329,10 @@ export default function Ranking() {
             <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-4">Prêmio interno</p>
               <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-tight mb-6">
-                O atleta nº 1<br />leva um par<br />de chuteiras<br />profissionais.
+                O atleta nº 1<br />leva um vale<br />tênis de<br />R$ 500,00.
               </h2>
               <p className="text-white/65 text-lg leading-relaxed mb-8">
-                Quem vender mais rifas até <strong className="text-white">15/07/2026</strong> recebe um par de chuteiras Mizuno Wave Lightning + cordão da campanha + foto pra parede da quadra.
+                Quem vender mais rifas até <strong className="text-white">30/06/2026</strong> recebe um vale tênis no valor de R$ 500,00 + cordão da campanha + foto pra parede da quadra.
               </p>
               <Link
                 to="/rifa#numeros"
@@ -358,8 +358,8 @@ export default function Ranking() {
                   </span>
                 </div>
                 <div>
-                  Chuteiras<br />
-                  <span className="text-brand-orange">Mizuno</span>
+                  Vale Tênis<br />
+                  <span className="text-brand-orange">R$ 500</span>
                 </div>
               </div>
             </motion.div>

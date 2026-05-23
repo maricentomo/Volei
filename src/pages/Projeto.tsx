@@ -15,7 +15,7 @@ export default function Projeto() {
       {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="relative bg-navy text-white overflow-hidden" style={{ minHeight: 560 }}>
         <img
-          src="/fotos-jogo/jogo1.jpg"
+          src="/fotos-pro/0.jpeg"
           alt="Base Vôlei Louveira em jogo"
           className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
         />
@@ -129,7 +129,7 @@ export default function Projeto() {
       {/* ── FOTOS GRID ───────────────────────────────────────── */}
       <section className="py-16 px-4 md:px-8 bg-white">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
-          {['/fotos-jogo/jogo4.jpg', '/fotos-jogo/jogo5.jpg', '/fotos-jogo/jogo1.jpg'].map((src, i) => (
+          {['/fotos-pro/0.jpeg', '/fotos-pro/3.jpeg', '/fotos-pro/5.jpeg'].map((src, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, scale: 0.96 }}
@@ -137,8 +137,9 @@ export default function Projeto() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className="rounded-2xl overflow-hidden shadow"
+              style={{ aspectRatio: '3/4' }}
             >
-              <img src={src} alt="Base Vôlei Louveira" className="w-full h-64 object-cover" />
+              <img src={src} alt="Base Vôlei Louveira" className="w-full h-full object-cover" />
             </motion.div>
           ))}
         </div>

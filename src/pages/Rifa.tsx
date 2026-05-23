@@ -473,7 +473,7 @@ export default function Rifa() {
             {[
               {
                 q: 'Como acontece o sorteio?',
-                a: 'O número premiado é definido pelos cinco prêmios da Loteria Federal do dia 19/07/2026. Lemos o resultado em transmissão ao vivo no Instagram da equipe.',
+                a: 'O sorteio será realizado no dia 30 de junho, às 19h30, após o treino oficial da equipe, caso todos os números tenham sido vendidos até a data. Poderá ocorrer de forma presencial e/ou com transmissão pelas redes sociais do time (@basevoleilouveira), garantindo transparência a todos os participantes.',
               },
               {
                 q: 'Posso comprar mais de um número?',

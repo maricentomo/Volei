@@ -104,7 +104,9 @@ export default function Patrocinadores() {
             </motion.a>
 
             <motion.a
-              href="#"
+              href="https://www.instagram.com/talitaisoppi_fotografa?igsh=MTRpa2t1YzUxajdsZg%3D%3D&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
