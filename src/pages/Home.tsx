@@ -29,19 +29,20 @@ const PRO_PHOTOS = Array.from({ length: 15 }, (_, i) => `/fotos-pro/pro${i + 1}.
 
 function ProGallery() {
   const [idx, setIdx] = useState(0);
-  const prev = () => setIdx(i => (i - 1 + PRO_PHOTOS.length) % PRO_PHOTOS.length);
-  const next = () => setIdx(i => (i + 1) % PRO_PHOTOS.length);
+
+  useEffect(() => {
+    const t = setInterval(() => setIdx(i => (i + 1) % PRO_PHOTOS.length), 3500);
+    return () => clearInterval(t);
+  }, []);
 
   return (
-    <div className="relative w-full max-w-md select-none">
-      {/* card com sombra laranja */}
+    <div className="relative w-full max-w-xs select-none">
       <div
         style={{
           borderRadius: 16,
           overflow: 'hidden',
           boxShadow: '8px 8px 0px #ed6c15',
-          transition: 'box-shadow 0.2s ease',
-          aspectRatio: '4/3',
+          aspectRatio: '3/4',
           background: '#0f172a',
         }}
       >
@@ -53,50 +54,11 @@ function ProGallery() {
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
             className="w-full h-full object-cover"
           />
         </AnimatePresence>
       </div>
-
-      {/* Controles */}
-      <div className="flex items-center justify-between mt-5">
-        <button
-          onClick={prev}
-          className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-orange text-white flex items-center justify-center transition-colors text-lg font-black"
-        >
-          ‹
-        </button>
-
-        {/* Dots */}
-        <div className="flex gap-1.5">
-          {PRO_PHOTOS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIdx(i)}
-              className="transition-all"
-              style={{
-                width: i === idx ? 20 : 6,
-                height: 6,
-                borderRadius: 999,
-                background: i === idx ? '#ed6c15' : 'rgba(255,255,255,0.25)',
-              }}
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={next}
-          className="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-orange text-white flex items-center justify-center transition-colors text-lg font-black"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* Contador */}
-      <p className="text-center text-white/30 font-mono text-[10px] uppercase tracking-widest mt-3">
-        {String(idx + 1).padStart(2, '0')} / {PRO_PHOTOS.length}
-      </p>
     </div>
   );
 }
