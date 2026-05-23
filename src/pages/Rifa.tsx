@@ -53,6 +53,8 @@ export default function Rifa() {
   const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string; total: number; payment_id: string } | null>(null);
   const [pixError, setPixError] = useState('');
   const [paid, setPaid] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [soldSet, setSoldSet] = useState<Set<number>>(new Set());
 
   useEffect(() => {
@@ -101,8 +103,8 @@ export default function Rifa() {
   const qty = selected.size;
   const total = qty * 0.05;
 
-  const finalize = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const finalize = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!selected.size) { alert('Escolha pelo menos 1 número.'); return; }
     setLoading(true);
     setPixError('');
@@ -378,7 +380,7 @@ export default function Rifa() {
               </div>
 
               {/* Form */}
-              <form onSubmit={finalize} className="flex flex-col gap-4">
+              <form onSubmit={e => { e.preventDefault(); setTermsAccepted(false); setShowTerms(true); }} className="flex flex-col gap-4">
                 {[
                   { id: 'name',  label: 'Seu nome completo',        type: 'text',  placeholder: 'Ana Silva'          },
                   { id: 'phone', label: 'WhatsApp',                  type: 'tel',   placeholder: '(19) 9 9999-9999'   },
@@ -421,7 +423,10 @@ export default function Rifa() {
                 >
                   {loading ? 'Gerando Pix…' : <> Finalizar compra <ArrowRight size={18} /> </>}
                 </button>
-                <p className="text-[12px] text-navy/40 text-center">O QR Code Pix aparece aqui na tela na hora.</p>
+                <p className="text-[12px] text-navy/40 text-center">
+                  O QR Code Pix aparece aqui na tela na hora. Ao finalizar você aceita o{' '}
+                  <button type="button" onClick={() => { setTermsAccepted(false); setShowTerms(true); }} className="text-brand-orange underline font-bold">regulamento oficial</button>.
+                </p>
               </form>
             </>)}
             </aside>
@@ -555,6 +560,80 @@ export default function Rifa() {
               >
                 Fechar
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Modal Regulamento ──────────────────────────────── */}
+      <AnimatePresence>
+        {showTerms && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(4px)' }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh]"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-7 py-5 border-b border-[#0f172a]/10 shrink-0">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-brand-orange block mb-0.5">Antes de continuar</span>
+                  <h3 className="font-black text-navy uppercase text-lg tracking-tight">Regulamento Oficial</h3>
+                </div>
+                <button onClick={() => setShowTerms(false)} className="text-navy/40 hover:text-navy text-2xl leading-none">×</button>
+              </div>
+
+              {/* Conteúdo scrollável */}
+              <div className="overflow-y-auto flex-1 px-7 py-6 text-sm text-navy/80 leading-relaxed space-y-4">
+                <p className="font-black text-navy uppercase text-center text-base">Rifa Solidária — Time de Vôlei Sub-17 Louveira</p>
+
+                {[
+                  { n: '1', t: 'Objetivo', c: 'Arrecadar recursos para custear as despesas do Time de Vôlei Masculino Sub-17 Louveira na participação da Taça Paraná, incluindo taxas de inscrição, transporte, alimentação, hospedagem e demais custos relacionados à competição.' },
+                  { n: '2', t: 'Organização', c: 'Campanha organizada EXCLUSIVAMENTE pelos atletas, familiares e apoiadores do Time de Vôlei Masculino Sub-17 Louveira (Comissão de Pais). Não tem relação direta com a Prefeitura do Município. Instagram: @basevoleilouveira.' },
+                  { n: '3', t: 'Quantidade de Números', c: 'Serão disponibilizados 1.000 números para venda.' },
+                  { n: '4', t: 'Valor', c: 'Cada número terá o valor de R$ 30,00 (trinta reais).' },
+                  { n: '5', t: 'Premiação', c: 'O ganhador receberá: 01 iPhone 16 128GB (Apple, iOS, 6,1 polegadas) OU R$ 4.000,00 via Pix. A opção será escolhida pelo ganhador no momento do contato oficial.' },
+                  { n: '6', t: 'Sorteio', c: 'Dia 30 de junho, às 19h30, após o treino oficial, caso todos os números tenham sido vendidos. Poderá ocorrer de forma presencial e/ou com transmissão pelas redes sociais (@basevoleilouveira).' },
+                  { n: '7', t: 'Entrega do Prêmio', c: 'O prêmio será entregue ao ganhador em até 07 (sete) dias corridos após o sorteio.' },
+                  { n: '8', t: 'Validação e Pagamento', c: 'O número somente será considerado válido após a confirmação do pagamento. Toda venda é direcionada para a conta do Mercado Pago em nome do time, administrada pela Comissão de Pais.' },
+                  { n: '9', t: 'Sobre a Venda dos Números', c: 'Caso todos os números não sejam vendidos até a data prevista, a organização poderá prorrogar a campanha ou realizar o sorteio proporcionalmente. Alterações serão divulgadas nas redes sociais.' },
+                  { n: '10', t: 'Gamificação', c: 'Os três melhores vendedores serão premiados: 1º lugar: Vale tênis R$ 500,00 · 2º lugar: Vale tênis R$ 300,00 · 3º lugar: Vale tênis R$ 200,00.' },
+                  { n: '11', t: 'Transparência e Boa-Fé', c: 'A organização conduzirá toda a campanha com transparência, ética e boa-fé, mantendo os participantes informados sobre o andamento das vendas e eventuais alterações.' },
+                  { n: '12', t: 'Disposições Finais', c: 'Ao participar da rifa, o comprador declara estar de acordo com todas as regras deste regulamento. Toda a arrecadação será integralmente destinada ao apoio esportivo do Time de Vôlei Masculino Sub-17 de Louveira.' },
+                ].map(item => (
+                  <div key={item.n}>
+                    <p className="font-black text-navy uppercase text-xs tracking-widest mb-1">{item.n}. {item.t}</p>
+                    <p>{item.c}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer com checkbox e botão */}
+              <div className="px-7 py-5 border-t border-[#0f172a]/10 shrink-0 space-y-4">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={termsAccepted}
+                    onChange={e => setTermsAccepted(e.target.checked)}
+                    className="mt-0.5 w-5 h-5 accent-[#ed6c15] cursor-pointer shrink-0"
+                  />
+                  <span className="text-sm text-navy/70">Li e aceito o regulamento oficial da Rifa Solidária do Time de Vôlei Sub-17 Louveira.</span>
+                </label>
+                <button
+                  disabled={!termsAccepted || loading}
+                  onClick={e => { setShowTerms(false); finalize(e as any); }}
+                  className="w-full py-4 bg-brand-orange text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-navy transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Gerando Pix…' : 'Confirmar e Gerar Pix →'}
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
