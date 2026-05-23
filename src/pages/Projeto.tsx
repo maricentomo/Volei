@@ -163,7 +163,7 @@ export default function Projeto() {
                 transition={{ delay: i * 0.06 }}
                 className="bg-white border border-[#0f172a]/10 rounded-xl p-5 text-center shadow-sm"
               >
-                <div className="w-8 h-8 rounded-full bg-brand-orange mx-auto mb-3" />
+                <img src="/bolabola.png" alt="" className="w-10 h-10 mx-auto mb-3 object-contain" />
                 <p className="font-black uppercase text-navy text-sm tracking-tight">{v}</p>
               </motion.div>
             ))}
@@ -188,12 +188,7 @@ export default function Projeto() {
             </h2>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
-            {[
-              { label: 'Número vendido', icon: '🎟️' },
-              { label: 'Apoio', icon: '💛' },
-              { label: 'Compartilhamento', icon: '📲' },
-              { label: 'Parceiro', icon: '🤝' },
-            ].map((item, i) => (
+            {['Número vendido', 'Apoio', 'Compartilhamento', 'Parceiro'].map((label, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 16 }}
@@ -202,8 +197,8 @@ export default function Projeto() {
                 transition={{ delay: i * 0.08 }}
                 className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center"
               >
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <p className="text-white font-black uppercase text-sm tracking-tight">Cada {item.label}</p>
+                <img src="/bolabola.png" alt="" className="w-12 h-12 mx-auto mb-3 object-contain" />
+                <p className="text-white font-black uppercase text-sm tracking-tight">Cada {label}</p>
                 <p className="text-brand-orange font-black uppercase text-sm mt-1">= Oportunidade</p>
               </motion.div>
             ))}
