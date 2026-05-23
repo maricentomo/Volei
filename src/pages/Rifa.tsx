@@ -54,6 +54,7 @@ export default function Rifa() {
   const [loading, setLoading] = useState(false);
   const [pixData, setPixData] = useState<{ qr_code: string; qr_code_base64: string; total: number; payment_id: string } | null>(null);
   const [pixError, setPixError] = useState('');
+  const [paid, setPaid] = useState(false);
 
   const toggle = (i: number) => {
     if (SOLD.has(i)) return;
@@ -307,6 +308,16 @@ export default function Rifa() {
 
             {/* Order panel */}
             <aside className="bg-white border border-[#0f172a]/10 rounded-2xl p-7 shadow-sm" style={{ position: 'sticky', top: 100 }}>
+            {paid ? (
+              <div className="flex flex-col items-center text-center py-6 gap-5">
+                <div className="w-20 h-20 rounded-full bg-brand-orange flex items-center justify-center text-white text-[44px]">✓</div>
+                <h3 className="font-black text-navy uppercase text-2xl tracking-tight">Pagamento enviado!</h3>
+                <p className="text-navy/60 text-sm leading-relaxed">Seu Pix foi gerado. Assim que confirmado, seus números ficam reservados. Boa sorte!</p>
+                <button onClick={() => setPaid(false)} className="w-full px-8 py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors">
+                  Comprar mais
+                </button>
+              </div>
+            ) : (<>
               <div className="flex justify-between items-center mb-5">
                 <h3 className="font-black text-navy uppercase text-2xl tracking-tight">Seu pedido</h3>
                 <span className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
@@ -404,6 +415,7 @@ export default function Rifa() {
                 </button>
                 <p className="text-[12px] text-navy/40 text-center">O QR Code Pix aparece aqui na tela na hora.</p>
               </form>
+            </>)}
             </aside>
 
           </div>
@@ -530,7 +542,7 @@ export default function Rifa() {
                 Atleta indicado: <strong className="text-navy">{ATHLETES.find(a => a.num === form.athlete)?.short ?? '—'}</strong>
               </p>
               <button
-                onClick={() => { setShowModal(false); setPixData(null); setSelected(new Set()); }}
+                onClick={() => { setShowModal(false); setPixData(null); setSelected(new Set()); setPaid(true); }}
                 className="w-full px-8 py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors"
               >
                 Fechar
