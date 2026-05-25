@@ -110,7 +110,7 @@ export default function Rifa() {
     e?.preventDefault();
     if (submittingRef.current) return;
     submittingRef.current = true;
-    if (!selected.size) { submittingRef.current = false; alert('Escolha pelo menos 1 número.'); return; }
+    if (!qty) { submittingRef.current = false; alert('Escolha pelo menos 1 número.'); return; }
     setLoading(true);
     setPixError('');
     const athlete = ATHLETES.find(a => a.num === form.athlete);
