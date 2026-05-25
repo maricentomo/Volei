@@ -44,7 +44,8 @@ export default function Rifa() {
     }
   }, [location.hash]);
 
-  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const submittingRef = useRef(false);
+  const [selected, setSelected] = useState<Record<number, true>>({});
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'free' | 'sel'>('all');
   const [form, setForm] = useState({ name: '', phone: '', email: '', cpf: '', athlete: '' });
@@ -55,34 +56,36 @@ export default function Rifa() {
   const [paid, setPaid] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [soldSet, setSoldSet] = useState<Set<number>>(new Set());
+  const [soldSet, setSoldSet] = useState<Record<number, true>>({});
 
   useEffect(() => {
     fetch('https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-vendidos')
       .then(r => r.json())
       .then((d: { numeros: string[] }) => {
-        setSoldSet(new Set(d.numeros.map(n => parseInt(n, 10))));
+        const s: Record<number, true> = {};
+        for (const n of d.numeros) s[parseInt(n, 10)] = true;
+        setSoldSet(s);
       })
       .catch(() => {});
   }, []);
 
   const toggle = (i: number) => {
-    if (soldSet.has(i)) return;
+    if (soldSet[i]) return;
     setSelected(prev => {
-      const next = new Set(prev);
-      next.has(i) ? next.delete(i) : next.add(i);
+      const next = { ...prev };
+      next[i] ? delete next[i] : (next[i] = true);
       return next;
     });
   };
 
   const quickAdd = (n: number) => {
     setSelected(prev => {
-      const next = new Set(prev);
+      const next = { ...prev };
       let added = 0, safety = 0;
       while (added < n && safety < 5000) {
         safety++;
         const k = Math.floor(Math.random() * TOTAL);
-        if (!soldSet.has(k) && !next.has(k)) { next.add(k); added++; }
+        if (!soldSet[k] && !next[k]) { next[k] = true; added++; }
       }
       return next;
     });
@@ -93,19 +96,21 @@ export default function Rifa() {
     for (let i = 0; i < TOTAL; i++) {
       const id = fmt(i);
       if (search && !id.includes(search)) continue;
-      if (filter === 'free' && soldSet.has(i)) continue;
-      if (filter === 'sel' && !selected.has(i)) continue;
+      if (filter === 'free' && soldSet[i]) continue;
+      if (filter === 'sel' && !selected[i]) continue;
       out.push(i);
     }
     return out;
   }, [search, filter, selected, soldSet]);
 
-  const qty = selected.size;
+  const qty = Object.keys(selected).length;
   const total = qty * 30;
 
   const finalize = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!selected.size) { alert('Escolha pelo menos 1 número.'); return; }
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    if (!selected.size) { submittingRef.current = false; alert('Escolha pelo menos 1 número.'); return; }
     setLoading(true);
     setPixError('');
     const athlete = ATHLETES.find(a => a.num === form.athlete);
@@ -115,7 +120,7 @@ export default function Rifa() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           total,
-          numero: [...selected].sort((a, b) => a - b).join(','),
+          numero: Object.keys(selected).map(Number).sort((a, b) => a - b).join(','),
           nome: form.name,
           email: form.email,
           whatsapp: form.phone,
@@ -132,6 +137,7 @@ export default function Rifa() {
       setPixError(err instanceof Error ? err.message : 'Erro ao conectar. Tente novamente.');
     } finally {
       setLoading(false);
+      submittingRef.current = false;
     }
   };
 
@@ -287,8 +293,8 @@ export default function Rifa() {
                 style={{ gap: 4, background: 'rgba(15,23,42,0.03)' }}
               >
                 {visible.map(i => {
-                  const sold = soldSet.has(i);
-                  const sel = selected.has(i);
+                  const sold = !!soldSet[i];
+                  const sel = !!selected[i];
                   return (
                     <div
                       key={i}
@@ -334,9 +340,9 @@ export default function Rifa() {
               <div className="mb-3">
                 <label className="block font-mono text-[10px] tracking-widest uppercase text-navy/60 mb-2">Números selecionados</label>
                 <div className="flex flex-wrap gap-1.5 min-h-7 mb-3">
-                  {selected.size === 0
+                  {qty === 0
                     ? <span className="font-mono text-[11px] tracking-widest uppercase text-navy/40 self-center">Nenhum número escolhido</span>
-                    : [...selected].sort((a, b) => a - b).map(i => (
+                    : Object.keys(selected).map(Number).sort((a, b) => a - b).map(i => (
                       <span key={i} className="inline-flex items-center gap-1.5 bg-brand-orange text-white font-mono font-semibold text-[12px] px-2.5 py-1 rounded-full">
                         {fmt(i)}
                         <button onClick={() => toggle(i)} className="text-white/80 hover:text-white leading-none text-sm">×</button>
@@ -352,7 +358,7 @@ export default function Rifa() {
                       +{n}
                     </button>
                   ))}
-                  <button onClick={() => setSelected(new Set())} className="bg-white border border-[#0f172a]/15 rounded-full px-4 py-2 font-black uppercase text-[13px] tracking-wide hover:border-brand-orange hover:text-brand-orange transition-colors">
+                  <button onClick={() => setSelected({})} className="bg-white border border-[#0f172a]/15 rounded-full px-4 py-2 font-black uppercase text-[13px] tracking-wide hover:border-brand-orange hover:text-brand-orange transition-colors">
                     Limpar
                   </button>
                 </div>
@@ -550,7 +556,7 @@ export default function Rifa() {
                 Atleta indicado: <strong className="text-navy">{ATHLETES.find(a => a.num === form.athlete)?.short ?? '—'}</strong>
               </p>
               <button
-                onClick={() => { setShowModal(false); setPixData(null); setSelected(new Set()); setPaid(true); }}
+                onClick={() => { setShowModal(false); setPixData(null); setSelected({}); setPaid(true); }}
                 className="w-full px-8 py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors"
               >
                 Fechar
