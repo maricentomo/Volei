@@ -5,20 +5,15 @@ import { ArrowRight } from 'lucide-react';
 import { useCampanha, type Atleta } from '../lib/useCampanha';
 
 const MAINTENANCE_MODE = true;
+const ADMIN_USER = 'admin';
 const ADMIN_PWD = 'base@2026';
 
 function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: () => void }) {
   const [idx, setIdx] = useState(0);
-  const [lead, setLead] = useState({ name: '', athlete: '' });
-  const [saved, setSaved] = useState(false);
-  const [pwdVisible, setPwdVisible] = useState(false);
+  const [loginVisible, setLoginVisible] = useState(false);
+  const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
-  const [pwdError, setPwdError] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('rifa_lead');
-    if (stored) { try { setLead(JSON.parse(stored)); } catch {} }
-  }, []);
+  const [loginError, setLoginError] = useState(false);
 
   useEffect(() => {
     if (atletas.length === 0) return;
@@ -26,19 +21,12 @@ function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: (
     return () => clearInterval(t);
   }, [atletas.length]);
 
-  const saveLead = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!lead.name || !lead.athlete) return;
-    localStorage.setItem('rifa_lead', JSON.stringify(lead));
-    setSaved(true);
-  };
-
-  const tryPassword = () => {
-    if (pwd === ADMIN_PWD) {
+  const tryLogin = () => {
+    if (user === ADMIN_USER && pwd === ADMIN_PWD) {
       localStorage.setItem('rifa_admin', 'true');
       onUnlock();
     } else {
-      setPwdError(true);
+      setLoginError(true);
       setPwd('');
     }
   };
@@ -59,7 +47,7 @@ function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: (
           o sistema.
         </h1>
         <p className="text-white/70 text-lg max-w-xl mx-auto leading-relaxed">
-          A rifa volta em breve. Enquanto isso, grave o nome do seu atleta favorito para não perder seu lugar!
+          A rifa volta em breve. Fique ligado!
         </p>
       </div>
 
@@ -112,83 +100,42 @@ function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: (
         </div>
       )}
 
-      {/* Formulário de lead */}
-      <div className="py-14 px-4 md:px-8 max-w-md mx-auto w-full">
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-7">
-          <h2 className="text-xl font-black uppercase tracking-tight mb-1">Reserve seu atleta</h2>
-          <p className="text-white/50 text-sm mb-6">Quando a rifa abrir, seus dados já estarão preenchidos.</p>
-
-          {saved ? (
-            <div className="text-center py-6">
-              <div className="text-[48px] mb-3">✅</div>
-              <p className="font-black text-white uppercase tracking-tight text-lg">Guardado!</p>
-              <p className="text-white/60 text-sm mt-2">Quando a rifa abrir, volte aqui e seus dados já estarão preenchidos.</p>
-            </div>
-          ) : (
-            <form onSubmit={saveLead} className="flex flex-col gap-4">
-              <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-white/50 mb-1.5">Seu nome completo</label>
-                <input
-                  type="text" required value={lead.name}
-                  onChange={e => setLead(p => ({ ...p, name: e.target.value }))}
-                  placeholder="Ana Silva"
-                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm outline-none focus:border-brand-orange placeholder:text-white/30"
-                />
-              </div>
-              <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-white/50 mb-1.5">★ Seu atleta favorito</label>
-                <select
-                  required value={lead.athlete}
-                  onChange={e => setLead(p => ({ ...p, athlete: e.target.value }))}
-                  className="w-full px-4 py-3 rounded-xl bg-navy border border-white/20 text-white text-sm outline-none focus:border-brand-orange"
-                >
-                  <option value="">Selecione um atleta…</option>
-                  {atletas.map(a => (
-                    <option key={a.num} value={a.num}>
-                      {a.name} #{a.num} {a.short} · {a.pos}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-4 bg-brand-orange text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-white hover:text-navy transition-colors"
-              >
-                Guardar minha preferência
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
-
       {/* Admin */}
       <div className="mt-auto py-10 px-4 text-center border-t border-white/10">
-        {!pwdVisible ? (
+        {!loginVisible ? (
           <button
-            onClick={() => setPwdVisible(true)}
+            onClick={() => setLoginVisible(true)}
             className="text-white/25 text-[11px] uppercase tracking-widest hover:text-white/50 transition-colors"
           >
             Administrador do sistema
           </button>
         ) : (
           <div className="max-w-xs mx-auto">
-            <p className="text-white/40 text-[11px] uppercase tracking-widest mb-3">Use a senha de administrador para acessar</p>
-            <div className="flex gap-2">
+            <p className="text-white/40 text-[11px] uppercase tracking-widest mb-3">Acesso restrito</p>
+            <div className="flex flex-col gap-2">
               <input
-                type="password" value={pwd}
-                onChange={e => { setPwd(e.target.value); setPwdError(false); }}
-                onKeyDown={e => e.key === 'Enter' && tryPassword()}
-                placeholder="••••••••"
-                className="flex-1 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm outline-none focus:border-brand-orange placeholder:text-white/30"
+                type="text" value={user}
+                onChange={e => { setUser(e.target.value); setLoginError(false); }}
+                placeholder="Usuário"
+                className="w-full px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm outline-none focus:border-brand-orange placeholder:text-white/30"
               />
-              <button
-                onClick={tryPassword}
-                className="px-4 py-2 bg-brand-orange text-white font-black text-sm rounded-xl hover:bg-white hover:text-navy transition-colors"
-              >
-                OK
-              </button>
+              <div className="flex gap-2">
+                <input
+                  type="password" value={pwd}
+                  onChange={e => { setPwd(e.target.value); setLoginError(false); }}
+                  onKeyDown={e => e.key === 'Enter' && tryLogin()}
+                  placeholder="Senha"
+                  className="flex-1 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm outline-none focus:border-brand-orange placeholder:text-white/30"
+                />
+                <button
+                  onClick={tryLogin}
+                  className="px-4 py-2 bg-brand-orange text-white font-black text-sm rounded-xl hover:bg-white hover:text-navy transition-colors"
+                >
+                  Entrar
+                </button>
+              </div>
             </div>
-            {pwdError && <p className="text-red-400 text-[11px] mt-2">Senha incorreta</p>}
+            {loginError && <p className="text-red-400 text-[11px] mt-2">Usuário ou senha incorretos</p>}
           </div>
         )}
       </div>
