@@ -2,7 +2,200 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'motion/react';
 import { useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { useCampanha } from '../lib/useCampanha';
+import { useCampanha, type Atleta } from '../lib/useCampanha';
+
+const MAINTENANCE_MODE = true;
+const ADMIN_PWD = 'base@2026';
+
+function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: () => void }) {
+  const [idx, setIdx] = useState(0);
+  const [lead, setLead] = useState({ name: '', athlete: '' });
+  const [saved, setSaved] = useState(false);
+  const [pwdVisible, setPwdVisible] = useState(false);
+  const [pwd, setPwd] = useState('');
+  const [pwdError, setPwdError] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('rifa_lead');
+    if (stored) { try { setLead(JSON.parse(stored)); } catch {} }
+  }, []);
+
+  useEffect(() => {
+    if (atletas.length === 0) return;
+    const t = setInterval(() => setIdx(i => (i + 1) % atletas.length), 3500);
+    return () => clearInterval(t);
+  }, [atletas.length]);
+
+  const saveLead = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!lead.name || !lead.athlete) return;
+    localStorage.setItem('rifa_lead', JSON.stringify(lead));
+    setSaved(true);
+  };
+
+  const tryPassword = () => {
+    if (pwd === ADMIN_PWD) {
+      localStorage.setItem('rifa_admin', 'true');
+      onUnlock();
+    } else {
+      setPwdError(true);
+      setPwd('');
+    }
+  };
+
+  const current = atletas[idx];
+
+  return (
+    <div className="min-h-screen bg-navy text-white flex flex-col">
+
+      {/* Header */}
+      <div className="pt-20 pb-10 px-4 md:px-8 text-center">
+        <span className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Em atualização
+        </span>
+        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
+          Estamos<br />
+          <span className="text-brand-orange">atualizando</span><br />
+          o sistema.
+        </h1>
+        <p className="text-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+          A rifa volta em breve. Enquanto isso, grave o nome do seu atleta favorito para não perder seu lugar!
+        </p>
+      </div>
+
+      {/* Carrossel de atletas */}
+      {atletas.length > 0 && current && (
+        <div className="py-10 px-4 flex flex-col items-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center"
+            >
+              <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '8px 8px 0px #ed6c15', width: 200, height: 260, background: '#1e2d45' }}>
+                {current.photo ? (
+                  <img src={current.photo} alt={current.short} className="w-full h-full object-cover object-top" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[64px] font-black text-white/20">
+                    {current.num}
+                  </div>
+                )}
+              </div>
+              <div className="mt-5 text-center">
+                <div className="text-2xl font-black uppercase tracking-tight">{current.name}</div>
+                <div className="text-brand-orange font-mono text-sm uppercase tracking-widest mt-1">
+                  #{current.num} · {current.short} · {current.pos}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Dots */}
+          <div className="flex gap-2 mt-6">
+            {atletas.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIdx(i)}
+                className="transition-all"
+                style={{
+                  width: i === idx ? 20 : 8,
+                  height: 8,
+                  borderRadius: 4,
+                  background: i === idx ? '#ed6c15' : 'rgba(255,255,255,0.2)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Formulário de lead */}
+      <div className="py-14 px-4 md:px-8 max-w-md mx-auto w-full">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-7">
+          <h2 className="text-xl font-black uppercase tracking-tight mb-1">Reserve seu atleta</h2>
+          <p className="text-white/50 text-sm mb-6">Quando a rifa abrir, seus dados já estarão preenchidos.</p>
+
+          {saved ? (
+            <div className="text-center py-6">
+              <div className="text-[48px] mb-3">✅</div>
+              <p className="font-black text-white uppercase tracking-tight text-lg">Guardado!</p>
+              <p className="text-white/60 text-sm mt-2">Quando a rifa abrir, volte aqui e seus dados já estarão preenchidos.</p>
+            </div>
+          ) : (
+            <form onSubmit={saveLead} className="flex flex-col gap-4">
+              <div>
+                <label className="block font-mono text-[10px] tracking-widest uppercase text-white/50 mb-1.5">Seu nome completo</label>
+                <input
+                  type="text" required value={lead.name}
+                  onChange={e => setLead(p => ({ ...p, name: e.target.value }))}
+                  placeholder="Ana Silva"
+                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm outline-none focus:border-brand-orange placeholder:text-white/30"
+                />
+              </div>
+              <div>
+                <label className="block font-mono text-[10px] tracking-widest uppercase text-white/50 mb-1.5">★ Seu atleta favorito</label>
+                <select
+                  required value={lead.athlete}
+                  onChange={e => setLead(p => ({ ...p, athlete: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-xl bg-navy border border-white/20 text-white text-sm outline-none focus:border-brand-orange"
+                >
+                  <option value="">Selecione um atleta…</option>
+                  {atletas.map(a => (
+                    <option key={a.num} value={a.num}>
+                      {a.name} #{a.num} {a.short} · {a.pos}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-4 bg-brand-orange text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-white hover:text-navy transition-colors"
+              >
+                Guardar minha preferência
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+
+      {/* Admin */}
+      <div className="mt-auto py-10 px-4 text-center border-t border-white/10">
+        {!pwdVisible ? (
+          <button
+            onClick={() => setPwdVisible(true)}
+            className="text-white/25 text-[11px] uppercase tracking-widest hover:text-white/50 transition-colors"
+          >
+            Administrador do sistema
+          </button>
+        ) : (
+          <div className="max-w-xs mx-auto">
+            <p className="text-white/40 text-[11px] uppercase tracking-widest mb-3">Use a senha de administrador para acessar</p>
+            <div className="flex gap-2">
+              <input
+                type="password" value={pwd}
+                onChange={e => { setPwd(e.target.value); setPwdError(false); }}
+                onKeyDown={e => e.key === 'Enter' && tryPassword()}
+                placeholder="••••••••"
+                className="flex-1 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm outline-none focus:border-brand-orange placeholder:text-white/30"
+              />
+              <button
+                onClick={tryPassword}
+                className="px-4 py-2 bg-brand-orange text-white font-black text-sm rounded-xl hover:bg-white hover:text-navy transition-colors"
+              >
+                OK
+              </button>
+            </div>
+            {pwdError && <p className="text-red-400 text-[11px] mt-2">Senha incorreta</p>}
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
 
 function AnimatedNumber({ end }: { end: number }) {
   const [value, setValue] = useState(0);
@@ -29,8 +222,15 @@ function fmt(n: number) {
 }
 
 export default function Rifa() {
+  const [adminUnlocked, setAdminUnlocked] = useState(
+    () => localStorage.getItem('rifa_admin') === 'true'
+  );
   const { data } = useCampanha();
   const ATHLETES = data?.atletas ?? [];
+
+  if (MAINTENANCE_MODE && !adminUnlocked) {
+    return <MaintenancePage atletas={ATHLETES} onUnlock={() => setAdminUnlocked(true)} />;
+  }
   const arrecadado = data?.arrecadado ?? 0;
   const meta = data?.meta ?? 40000;
   const location = useLocation();
@@ -106,7 +306,7 @@ export default function Rifa() {
   const qty = Object.keys(selected).length;
   const total = qty * 30;
 
-  const finalize = async (e?: React.FormEvent) => {
+  const finalize = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     if (submittingRef.current) return;
     submittingRef.current = true;
