@@ -34,6 +34,14 @@ export default function Ranking() {
   const RANK = data
     ? [...data.atletas].sort((a, b) => b.sales - a.sales)
     : [];
+
+  // Grupos de empate: cada posição do pódio reúne todos com mesmo nº de vendas
+  const uniqueSales = [...new Set(RANK.map(a => a.sales))].sort((a, b) => b - a);
+  const rankGroups = uniqueSales.slice(0, 3).map((sales, i) => ({
+    place: i + 1,
+    sales,
+    athletes: RANK.filter(a => a.sales === sales),
+  }));
   const maxSales    = RANK[0]?.sales ?? 0;
   const totalSales  = RANK.reduce((s, a) => s + a.sales, 0);
   const totalRevenue = totalSales * 30;
@@ -131,12 +139,24 @@ export default function Ranking() {
             {RANK.length === 0 ? (
               <div className="col-span-3 py-16 text-center font-black text-navy/30 uppercase tracking-widest text-sm">Carregando pódio…</div>
             ) : [
-              { place: '02', bg: '#1e2d45',  stroke: 'rgba(255,255,255,0.15)', minH: 320, delay: 0    },
-              { place: '01', bg: '#ed6c15',  stroke: 'rgba(255,255,255,0.2)',  minH: 360, delay: 0.1, crown: true },
-              { place: '03', bg: '#0f172a',  stroke: 'rgba(255,255,255,0.12)', minH: 290, delay: 0.2  },
-            ].map((p, i) => {
-              const idx = i === 0 ? 1 : i === 1 ? 0 : 2;
-              const a = RANK[idx] ?? RANK[0];
+              { place: '02', bg: '#1e2d45',  stroke: 'rgba(255,255,255,0.15)', minH: 320, delay: 0,   groupIdx: 1 },
+              { place: '01', bg: '#ed6c15',  stroke: 'rgba(255,255,255,0.2)',  minH: 360, delay: 0.1, groupIdx: 0, crown: true },
+              { place: '03', bg: '#0f172a',  stroke: 'rgba(255,255,255,0.12)', minH: 290, delay: 0.2, groupIdx: 2 },
+            ].map(p => {
+              const group = rankGroups[p.groupIdx];
+              if (!group) return (
+                <motion.div
+                  key={p.place}
+                  initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: p.delay }}
+                  className="relative overflow-hidden rounded-2xl p-7 text-white flex flex-col items-center justify-center"
+                  style={{ background: p.bg, minHeight: p.minH, opacity: 0.4 }}
+                >
+                  <div className="text-[92px] font-black leading-[0.85]" style={{ color: 'transparent', WebkitTextStroke: `2px ${p.stroke}` }}>{p.place}</div>
+                  <div className="text-[13px] font-black uppercase tracking-widest opacity-50 mt-4">Sem vendas</div>
+                </motion.div>
+              );
+              const primary = group.athletes[0];
+              const tied = group.athletes.length > 1;
               return (
                 <motion.div
                   key={p.place}
@@ -144,23 +164,55 @@ export default function Ranking() {
                   className="relative overflow-hidden rounded-2xl p-7 text-white flex flex-col"
                   style={{ background: p.bg, minHeight: p.minH }}
                 >
-                  {p.crown && <span className="absolute top-5 right-5 text-[38px]">👑</span>}
-                  <span className="absolute bottom-[-20px] right-[-10px] text-[220px] font-black leading-none pointer-events-none select-none" style={{ color: 'rgba(255,255,255,.06)' }}>{a.num}</span>
+                  {'crown' in p && <span className="absolute top-5 right-5 text-[38px]">👑</span>}
+                  <span className="absolute bottom-[-20px] right-[-10px] text-[220px] font-black leading-none pointer-events-none select-none" style={{ color: 'rgba(255,255,255,.06)' }}>{primary.num}</span>
                   <div className="text-[92px] font-black leading-[0.85]" style={{ color: 'transparent', WebkitTextStroke: `2px ${p.stroke}` }}>{p.place}</div>
-                  {a.photo && (
-                    <div className="mb-4">
-                      <img
-                        src={a.photo}
-                        alt={a.short}
-                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                        className="w-20 h-20 rounded-full object-cover object-top border-2 border-white/30"
-                      />
+
+                  {tied ? (
+                    /* Empate — várias fotos */
+                    <div className="flex flex-wrap gap-3 mb-4">
+                      {group.athletes.map(a => (
+                        <div key={a.num} className="flex flex-col items-center gap-1">
+                          {a.photo ? (
+                            <img
+                              src={a.photo} alt={a.short}
+                              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                              className="w-14 h-14 rounded-full object-cover object-top border-2 border-white/30"
+                            />
+                          ) : (
+                            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center font-black text-sm">{a.num}</div>
+                          )}
+                          <span className="text-[10px] font-black uppercase tracking-wide">{a.short}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    /* Único */
+                    primary.photo && (
+                      <div className="mb-4">
+                        <img
+                          src={primary.photo} alt={primary.short}
+                          onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                          className="w-20 h-20 rounded-full object-cover object-top border-2 border-white/30"
+                        />
+                      </div>
+                    )
+                  )}
+
+                  {!tied && (
+                    <>
+                      <div className="text-[34px] font-black uppercase leading-[0.95] mb-1.5">{primary.short}</div>
+                      <div className="text-[11px] font-black uppercase tracking-widest opacity-70">#{primary.num} · {primary.pos}</div>
+                    </>
+                  )}
+                  {tied && (
+                    <div className="text-[11px] font-black uppercase tracking-widest opacity-70 mb-1">
+                      {group.athletes.length} atletas empatados
                     </div>
                   )}
-                  <div className="text-[34px] font-black uppercase leading-[0.95] mb-1.5">{a.short}</div>
-                  <div className="text-[11px] font-black uppercase tracking-widest opacity-70">#{a.num} · {a.pos}</div>
+
                   <div className="mt-6 text-[64px] font-black leading-none">
-                    {a.sales}
+                    {group.sales}
                     <small className="block font-mono font-semibold text-[11px] tracking-widest opacity-70 mt-1 normal-case">rifas vendidas</small>
                   </div>
                 </motion.div>
