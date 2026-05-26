@@ -7,7 +7,7 @@ import { useCampanha, type Atleta } from '../lib/useCampanha';
 const MAINTENANCE_MODE = true;
 const ADMIN_USER = 'admin';
 const ADMIN_PWD = 'base@2026';
-const TEST_MODE = true;
+const TEST_MODE = false;
 const PRECO_RIFA = TEST_MODE ? 0.05 : 30;
 
 function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: () => void }) {
