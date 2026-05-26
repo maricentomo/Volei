@@ -231,7 +231,7 @@ export default function Rifa() {
       let added = 0, safety = 0;
       while (added < n && safety < 5000) {
         safety++;
-        const k = Math.floor(Math.random() * TOTAL);
+        const k = Math.floor(Math.random() * TOTAL) + 1;
         if (!soldSet[k] && !next[k]) { next[k] = true; added++; }
       }
       return next;
@@ -240,7 +240,7 @@ export default function Rifa() {
 
   const visible = useMemo(() => {
     const out: number[] = [];
-    for (let i = 0; i < TOTAL; i++) {
+    for (let i = 1; i <= TOTAL; i++) {
       const id = fmt(i);
       if (search && !id.includes(search)) continue;
       if (filter === 'free' && soldSet[i]) continue;
