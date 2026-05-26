@@ -277,6 +277,12 @@ export default function Rifa() {
         }),
       });
       const json = await res.json();
+      if (res.status === 409 && json.duplicado) {
+        const dupNums = (json.numeros as string[]).map(Number);
+        setSoldSet(prev => { const n = { ...prev }; dupNums.forEach(x => { n[x] = true; }); return n; });
+        setSelected(prev => { const n = { ...prev }; dupNums.forEach(x => { delete n[x]; }); return n; });
+        throw new Error(`Número(s) ${json.numeros.join(', ')} já foram vendidos e foram removidos da sua seleção. Escolha outros.`);
+      }
       if (!res.ok || json.erro) throw new Error(json.mensagem || 'Erro ao gerar Pix');
       setPixData(json);
       setShowModal(true);

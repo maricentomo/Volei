@@ -1,0 +1,172 @@
+{
+  "name": "Rifa - Criar Pix MP",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rifa-criar-pix",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-criar-pix",
+      "name": "Webhook Criar Pix",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "rifa-criar-pix"
+    },
+    {
+      "parameters": {
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "rifa_principal", "mode": "name" },
+        "options": {}
+      },
+      "id": "ler-rifa-principal",
+      "name": "Ler rifa_principal",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [480, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "FHehnCnmZ5O9ewQX", "name": "Google Sheets account 2" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $('Webhook Criar Pix').first().json.body;\nconst requestedNums = String(body.numero).split(',').map(n => n.trim()).filter(Boolean);\n\nconst soldNums = new Set();\n$('Ler rifa_principal').all().forEach(i => {\n  const numStr = String(i.json.numero || '').trim();\n  numStr.split(',').forEach(n => {\n    const c = n.trim();\n    if (c) soldNums.add(c);\n  });\n});\n\nconst duplicados = requestedNums.filter(n => soldNums.has(n));\n\nreturn [{ json: { duplicado: duplicados.length > 0, duplicados, requestedNums } }];"
+      },
+      "id": "verificar-duplicata",
+      "name": "Verificar Duplicata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "cond-duplicado",
+              "leftValue": "={{ $json.duplicado }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-duplicado",
+      "name": "IF Duplicado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ erro: true, duplicado: true, mensagem: 'Número(s) ' + $json.duplicados.join(', ') + ' já foram vendidos. Por favor, escolha outros números.', numeros: $json.duplicados }) }}",
+        "options": {
+          "responseCode": 409,
+          "responseHeaders": {
+            "entries": [{ "name": "Access-Control-Allow-Origin", "value": "*" }]
+          }
+        }
+      },
+      "id": "respond-duplicado",
+      "name": "Responder Duplicado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1200, 140]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mercadopago.com/v1/payments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "X-Idempotency-Key", "value": "={{ $('Webhook Criar Pix').first().json.body.numero + '-' + $now.toMillis() }}" }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={\n  \"transaction_amount\": {{ $('Webhook Criar Pix').first().json.body.total }},\n  \"description\": \"Rifa Base Vôlei Louveira - Número {{ $('Webhook Criar Pix').first().json.body.numero }}\",\n  \"payment_method_id\": \"pix\",\n  \"payer\": {\n    \"email\": \"{{ $('Webhook Criar Pix').first().json.body.email }}\",\n    \"first_name\": \"{{ $('Webhook Criar Pix').first().json.body.nome.split(' ')[0] }}\",\n    \"last_name\": \"{{ $('Webhook Criar Pix').first().json.body.nome.split(' ').slice(1).join(' ') || 'Sobrenome' }}\",\n    \"identification\": {\n      \"type\": \"CPF\",\n      \"number\": \"{{ $('Webhook Criar Pix').first().json.body.cpf.replace(/[^0-9]/g, '') }}\"\n    }\n  },\n  \"notification_url\": \"https://bot-n8n.k474gt.easypanel.host/webhook/rifa-confirmar-pix\",\n  \"metadata\": {\n    \"atleta_id\": \"{{ $('Webhook Criar Pix').first().json.body.atleta_id }}\",\n    \"atleta_nome\": \"{{ $('Webhook Criar Pix').first().json.body.atleta_nome }}\",\n    \"numero\": \"{{ $('Webhook Criar Pix').first().json.body.numero }}\",\n    \"nome_comprador\": \"{{ $('Webhook Criar Pix').first().json.body.nome }}\",\n    \"whatsapp\": \"{{ $('Webhook Criar Pix').first().json.body.whatsapp }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "mp-criar-pagamento",
+      "name": "MP - Criar Pagamento Pix",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 460],
+      "credentials": {
+        "httpHeaderAuth": { "id": "mercado-pago-cred", "name": "Mercado Pago" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"payment_id\": \"{{ $json.id }}\",\n  \"status\": \"{{ $json.status }}\",\n  \"qr_code\": \"{{ $json.point_of_interaction.transaction_data.qr_code }}\",\n  \"qr_code_base64\": \"{{ $json.point_of_interaction.transaction_data.qr_code_base64 }}\",\n  \"total\": {{ $json.transaction_amount }},\n  \"expiracao\": \"{{ $json.date_of_expiration }}\"\n}",
+        "options": {
+          "responseHeaders": {
+            "entries": [{ "name": "Access-Control-Allow-Origin", "value": "*" }]
+          }
+        }
+      },
+      "id": "respond-pix",
+      "name": "Responder com Pix",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1440, 380]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"erro\": true,\n  \"mensagem\": \"{{ $json.message || 'Erro ao criar pagamento' }}\",\n  \"detalhes\": {{ JSON.stringify($json) }}\n}",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [{ "name": "Access-Control-Allow-Origin", "value": "*" }]
+          }
+        }
+      },
+      "id": "respond-erro",
+      "name": "Responder Erro",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1440, 540]
+    }
+  ],
+  "connections": {
+    "Webhook Criar Pix": {
+      "main": [[{ "node": "Ler rifa_principal", "type": "main", "index": 0 }]]
+    },
+    "Ler rifa_principal": {
+      "main": [[{ "node": "Verificar Duplicata", "type": "main", "index": 0 }]]
+    },
+    "Verificar Duplicata": {
+      "main": [[{ "node": "IF Duplicado", "type": "main", "index": 0 }]]
+    },
+    "IF Duplicado": {
+      "main": [
+        [{ "node": "Responder Duplicado", "type": "main", "index": 0 }],
+        [{ "node": "MP - Criar Pagamento Pix", "type": "main", "index": 0 }]
+      ]
+    },
+    "MP - Criar Pagamento Pix": {
+      "main": [
+        [{ "node": "Responder com Pix", "type": "main", "index": 0 }],
+        [{ "node": "Responder Erro", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1", "errorWorkflow": "" },
+  "versionId": "2",
+  "meta": { "instanceId": "rifa-volei-louveira" },
+  "id": "rifa-criar-pix-v1",
+  "tags": []
+}
