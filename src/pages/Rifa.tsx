@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCampanha, type Atleta } from '../lib/useCampanha';
 
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 const ADMIN_USER = 'admin';
 const ADMIN_PWD = 'base@2026';
 
@@ -251,7 +251,7 @@ export default function Rifa() {
   }, [search, filter, selected, soldSet]);
 
   const qty = Object.keys(selected).length;
-  const total = qty * 30;
+  const total = qty * 0.05;
 
   const finalize = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
