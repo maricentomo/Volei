@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCampanha, type Atleta } from '../lib/useCampanha';
 
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 const ADMIN_USER = 'admin';
 const ADMIN_PWD = 'base@2026';
 const TEST_MODE = false;
