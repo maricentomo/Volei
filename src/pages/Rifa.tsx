@@ -7,6 +7,8 @@ import { useCampanha, type Atleta } from '../lib/useCampanha';
 const MAINTENANCE_MODE = false;
 const ADMIN_USER = 'admin';
 const ADMIN_PWD = 'base@2026';
+const TEST_MODE = true;
+const PRECO_RIFA = TEST_MODE ? 0.05 : 30;
 
 function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: () => void }) {
   const [idx, setIdx] = useState(0);
@@ -251,7 +253,7 @@ export default function Rifa() {
   }, [search, filter, selected, soldSet]);
 
   const qty = Object.keys(selected).length;
-  const total = qty * 0.05;
+  const total = qty * PRECO_RIFA;
 
   const finalize = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
@@ -281,7 +283,7 @@ export default function Rifa() {
         const dupNums = (json.numeros as string[]).map(Number);
         setSoldSet(prev => { const n = { ...prev }; dupNums.forEach(x => { n[x] = true; }); return n; });
         setSelected(prev => { const n = { ...prev }; dupNums.forEach(x => { delete n[x]; }); return n; });
-        throw new Error(`Número(s) ${json.numeros.join(', ')} já foram vendidos e foram removidos da sua seleção. Escolha outros.`);
+        throw new Error(`Número(s) ${json.numeros.join(', ')} já estão indisponíveis e foram removidos da sua seleção. Escolha outros.`);
       }
       if (!res.ok || json.erro) throw new Error(json.mensagem || 'Erro ao gerar Pix');
       setPixData(json);
@@ -476,7 +478,7 @@ export default function Rifa() {
               <div className="flex flex-col items-center text-center py-6 gap-5">
                 <div className="w-20 h-20 rounded-full bg-brand-orange flex items-center justify-center text-white text-[44px]">✓</div>
                 <h3 className="font-black text-navy uppercase text-2xl tracking-tight">Pagamento enviado!</h3>
-                <p className="text-navy/60 text-sm leading-relaxed">Seu Pix foi gerado. Assim que confirmado, seus números ficam reservados. Boa sorte!</p>
+                <p className="text-navy/60 text-sm leading-relaxed">Seus números estão reservados por 15 minutos. Após a confirmação do pagamento, sua participação estará garantida.<br /><br />Se o Pix não for pago dentro do prazo, os números voltarão a ficar disponíveis.<br /><br />Boa sorte!</p>
                 <button onClick={() => setPaid(false)} className="w-full px-8 py-3 bg-navy text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-brand-orange transition-colors">
                   Comprar mais
                 </button>
