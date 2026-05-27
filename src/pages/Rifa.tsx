@@ -166,6 +166,28 @@ function AnimatedNumber({ end }: { end: number }) {
 
 const TOTAL = 1000;
 
+function validarCPF(cpf: string): boolean {
+  const n = cpf.replace(/\D/g, '');
+  if (n.length !== 11 || /^(\d)\1{10}$/.test(n)) return false;
+  let s = 0;
+  for (let i = 0; i < 9; i++) s += parseInt(n[i]) * (10 - i);
+  let r = (s * 10) % 11;
+  if (r === 10 || r === 11) r = 0;
+  if (r !== parseInt(n[9])) return false;
+  s = 0;
+  for (let i = 0; i < 10; i++) s += parseInt(n[i]) * (11 - i);
+  r = (s * 10) % 11;
+  if (r === 10 || r === 11) r = 0;
+  return r === parseInt(n[10]);
+}
+
+function mascaraCPF(v: string): string {
+  return v.replace(/\D/g, '').slice(0, 11)
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+
 function fmt(n: number) {
   return String(n).padStart(3, '0');
 }
@@ -260,6 +282,7 @@ export default function Rifa() {
     if (submittingRef.current) return;
     submittingRef.current = true;
     if (!qty) { submittingRef.current = false; alert('Escolha pelo menos 1 número.'); return; }
+    if (!validarCPF(form.cpf)) { submittingRef.current = false; setPixError('CPF inválido. Confira os números e tente novamente.'); return; }
     setLoading(true);
     setPixError('');
     const athlete = ATHLETES.find(a => a.num === form.athlete);
@@ -541,7 +564,6 @@ export default function Rifa() {
                   { id: 'name',  label: 'Seu nome completo',        type: 'text',  placeholder: 'Ana Silva'          },
                   { id: 'phone', label: 'WhatsApp',                  type: 'tel',   placeholder: '(19) 9 9999-9999'   },
                   { id: 'email', label: 'E-mail',                    type: 'email', placeholder: 'ana@email.com'       },
-                  { id: 'cpf',   label: 'CPF',                       type: 'text',  placeholder: '000.000.000-00'      },
                 ].map(f => (
                   <div key={f.id}>
                     <label className="block font-mono text-[10px] tracking-widest uppercase text-navy/60 mb-1.5">{f.label}</label>
@@ -553,6 +575,15 @@ export default function Rifa() {
                     />
                   </div>
                 ))}
+                <div>
+                  <label className="block font-mono text-[10px] tracking-widest uppercase text-navy/60 mb-1.5">CPF</label>
+                  <input
+                    type="text" required placeholder="000.000.000-00"
+                    value={form.cpf}
+                    onChange={e => setForm(prev => ({ ...prev, cpf: mascaraCPF(e.target.value) }))}
+                    className="w-full px-4 py-3 rounded-xl border border-[#0f172a]/15 bg-white text-navy text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-[#ed6c15]/20 transition-colors"
+                  />
+                </div>
 
                 <div>
                   <label className="block font-mono text-[10px] tracking-widest uppercase text-navy/60 mb-1.5">★ Indique seu atleta favorito</label>
