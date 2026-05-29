@@ -187,7 +187,7 @@ export default function Atletas() {
             <div className="font-black text-white uppercase text-2xl tracking-tight mb-1">Alisson Salomão</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-4">Técnico principal · desde 2021</div>
             <p className="text-white/60 text-base leading-relaxed">
-            Vinculada à Secretaria de Esportes, Lazer e Juventude, a Base Vôlei Louveira é comandada, desde 2021, pelo professor Alisson Salomão.
+            Vinculado à Secretaria de Esportes, Lazer e Juventude, a Base Vôlei Louveira é comandada, desde 2021, pelo professor Alisson Salomão.
 
 Alisson é formado em Educação Física pela Escola Superior de Educação Física — ESEF — e possui mais de 10 anos de experiência atuando com voleibol.            </p>
           </motion.div>
@@ -231,7 +231,7 @@ Alisson é formado em Educação Física pela Escola Superior de Educação Fís
               [
                 { yr: '2024', title: 'Safra de ouro', body: 'Campeões regionais sub-19 e sub-21, vice na Liga de Sorocaba sub-17 e sub-19, 3º nos Jogos Regionais.' },
                 { yr: '2025', title: 'Expansão nacional', body: 'Taça Paraná, Copa São Paulo, Jogos da Juventude. 7 competições, 4 pódios, visibilidade nacional.' },
-                { yr: '2026', title: 'Rumo a Maringá', body: 'Campanha pública aberta. Meta de R$ 30 mil. Você está lendo a história em tempo real.' },
+                { yr: '2026', title: 'Rumo a São José dos Pinhais e Curitiba', body: 'Campanha pública aberta. Meta de R$ 40 mil. Você está lendo a história em tempo real.' },
               ],
             ].map((col, ci) => (
               <div key={ci} className="relative pl-8 border-l-2 border-white/10">
@@ -269,9 +269,9 @@ Alisson é formado em Educação Física pela Escola Superior de Educação Fís
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { n: '01', title: 'Disciplina que sai da quadra', body: 'Vôlei é o esporte coletivo com mais decisões por segundo. Treinar isso aos 16 muda como o jovem encara prova, prazo e família.' },
-              { n: '02', title: 'Janela curta pra crescer', body: 'Entre 15 e 17 anos é quando o atleta é olhado pelos clubes profissionais. Cada campeonato vira uma vitrine — ou uma porta fechada.' },
-              { n: '03', title: 'A Taça Paraná é a porta', body: 'Uma das maiores competições de base da América Latina. Quem joga ali, é notado por clubes de SP, PR, SC e MG.' },
+              { n: '01', title: 'O esporte molda o caráter e desenvolve virtudes', body: 'Além da formação de atletas, o esporte desenvolve competências que fortalecem o caráter e acompanham esses jovens por toda a vida, dentro e fora das quadras.' },
+              { n: '02', title: 'A Taça Paraná é uma vitrine de oportunidades', body: 'A Taça Paraná reúne grandes equipes e jovens talentos do Brasil e da América Latina. Mais do que uma competição, é uma oportunidade de crescimento, aprendizado e visibilidade que pode marcar o futuro desses atletas.' },
+              { n: '03', title: 'Por trás de cada atleta, existe uma rede acreditando', body: 'Pais, familiares, técnicos e apoiadores caminham juntos para manter esse sonho vivo. Cada contribuição ajuda a transformar dedicação, esforço e talento em oportunidades reais para esses jovens.' },
             ].map((c, i) => (
               <motion.div
                 key={i}
@@ -298,7 +298,7 @@ Alisson é formado em Educação Física pela Escola Superior de Educação Fís
         <div className="relative z-10 max-w-2xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-tight mb-6">
-              Bora juntos<br />até Maringá?
+              Bora juntos<br />com esse time?
             </h2>
             <p className="text-white/70 text-lg mb-10 leading-relaxed">
               R$ 30 numa rifa. Um Pix qualquer. Cada gesto vira passagem, hotel e prato cheio pra esses atletas realizarem o sonho.

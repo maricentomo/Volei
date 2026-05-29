@@ -5,7 +5,7 @@ import { ArrowRight, Ticket, Heart, Share2, Handshake } from 'lucide-react';
 const VALUES = ['Disciplina', 'Propósito', 'Pertencimento', 'Superação', 'Transformação'];
 const VIRTUES = [
   'Maturidade', 'Resiliência', 'Responsabilidade', 'Controle emocional',
-  'Cooperação', 'Respeito', 'Liderança', 'Coragem', 'Autocontrole',
+  'Cooperação', 'Respeito', 'Liderança', 'Coragem', 'Autocontrole', 'Disciplina',
 ];
 
 export default function Projeto() {
@@ -116,8 +116,7 @@ export default function Projeto() {
             <p className="text-white/50 font-black uppercase text-[11px] tracking-[0.4em] mb-8">Por que eles são especiais</p>
             <p className="text-white text-2xl md:text-3xl font-black leading-relaxed mb-6">
               Enquanto muitos adolescentes ainda estão tentando descobrir seus caminhos, eles conciliam{' '}
-              <span className="text-brand-orange">escola, provas, treinos, viagens, rotina intensa</span>,
-              esforço físico e dedicação ao esporte.
+              <span className="text-brand-orange">escola, provas, treinos, viagens, rotina intensa, esforço físico e dedicação ao esporte.</span>
             </p>
             <p className="text-white/70 text-xl leading-relaxed">
               Porque escolheram evoluir. Porque aprenderam que crescimento exige constância. Porque descobriram no esporte um caminho de amadurecimento, caráter e transformação.
