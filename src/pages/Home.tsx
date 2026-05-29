@@ -154,7 +154,7 @@ export default function Home() {
 
               <div className="flex flex-wrap gap-4">
                 <Link to="/atletas" className="btn-primary flex items-center gap-2">
-                  Conhecer o projeto <ArrowRight size={16} />
+                  Conheça o projeto <ArrowRight size={16} />
                 </Link>
                 <Link to="/rifa" className="px-6 py-3 rounded-lg font-bold uppercase tracking-wider border-2 border-[#0f172a]/30 text-navy hover:bg-navy hover:text-white transition-colors flex items-center gap-2">
                   Como ajudar <ArrowRight size={16} />
@@ -307,19 +307,19 @@ export default function Home() {
                 {
                   n: '01',
                   label: 'Passo 01',
-                  title: 'Compra seu número',
+                  title: 'Compre seu número',
                   desc: 'São 1.000 números a R$ 30 cada. Você escolhe quantos quiser e já está concorrendo ao iPhone 16.',
                 },
                 {
                   n: '02',
                   label: 'Passo 02',
-                  title: 'Escolhe o seu atleta',
+                  title: 'Escolha o seu atleta',
                   desc: 'Na finalização, indique para qual dos 22 atletas o crédito da venda vai. Cada compra impulsiona um nome específico no ranking interno.',
                 },
                 {
                   n: '03',
                   label: 'Passo 03',
-                  title: 'Torce duas vezes',
+                  title: 'Torça duas vezes',
                   desc: 'Pelo seu atleta no ranking de vendas e pelo seu número no sorteio. Quem mais vender leva prêmio; quem comprar pode levar o iPhone.',
                 },
               ].map((step, i) => (

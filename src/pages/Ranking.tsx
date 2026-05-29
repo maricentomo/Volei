@@ -101,7 +101,7 @@ export default function Ranking() {
               </h1>
               <p className="text-navy/65 text-lg leading-relaxed max-w-lg">
                 Cada rifa creditada vai pro placar. O atleta que somar mais vendas até{' '}
-                <strong className="text-navy">15/07/2026</strong> leva um prêmio especial e o título de{' '}
+                <strong className="text-navy">30/07/2026</strong> leva um prêmio especial e o título de{' '}
                 <strong className="text-navy">vendedor da Taça</strong>.
               </p>
             </motion.div>
