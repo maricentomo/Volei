@@ -322,53 +322,56 @@ export default function Ranking() {
         </div>
       </section>
 
-      {/* ── Evolução semanal ──────────────────────────────── */}
+      {/* ── Meta de arrecadação ───────────────────────────── */}
       <section className="py-20 px-4 md:px-8" style={{ background: 'rgba(15,23,42,0.03)' }}>
         <div className="max-w-7xl mx-auto">
-          <div className="bg-navy rounded-2xl p-8">
-            <div className="flex justify-between items-end flex-wrap gap-4 mb-5">
+          <div className="bg-navy rounded-2xl p-8 md:p-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-3">Vendas no tempo</p>
-                <h3 className="text-2xl font-black text-white uppercase tracking-tight">Evolução semanal</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-3">Campanha em andamento</p>
+                <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight leading-tight">
+                  Meta de<br />arrecadação
+                </h3>
               </div>
-              <span className="inline-block bg-white/10 text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">Últimas 8 semanas</span>
+              <div className="text-right">
+                <div className="text-5xl md:text-6xl font-black text-brand-orange leading-none">
+                  {pctMeta}%
+                </div>
+                <div className="text-white/50 font-mono text-[11px] tracking-widest uppercase mt-1">da meta atingida</div>
+              </div>
             </div>
 
-            <svg viewBox="0 0 800 220" preserveAspectRatio="none" className="w-full" style={{ height: 220 }}>
-              <defs>
-                <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#ed6c15" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#ed6c15" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <g stroke="rgba(255,255,255,.08)" strokeWidth="1">
-                <line x1="0" y1="40"  x2="800" y2="40"  />
-                <line x1="0" y1="90"  x2="800" y2="90"  />
-                <line x1="0" y1="140" x2="800" y2="140" />
-                <line x1="0" y1="190" x2="800" y2="190" />
-              </g>
-              <path d={TL_AREA} fill="url(#areaGrad)" stroke="none" />
-              <path d={TL_LINE} fill="none" stroke="#ed6c15" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              <g>
-                {TL_PTS.map((p, i) => (
-                  <g key={i}>
-                    <circle cx={p[0]} cy={p[1]} r="5" fill="#ed6c15" stroke="#0f172a" strokeWidth="2" />
-                    <text
-                      x={p[0]} y={Math.max(p[1] - 12, 14)}
-                      textAnchor="middle" fill="rgba(255,255,255,.85)"
-                      fontFamily="monospace" fontSize="11"
-                    >{weeklyData[i] > 0 ? `R$${Math.round(weeklyData[i])}` : '0'}</text>
-                  </g>
-                ))}
-              </g>
-            </svg>
+            {/* Barra de progresso */}
+            <div className="relative h-6 bg-white/10 rounded-full overflow-hidden mb-6">
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: `${pctMeta}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.6, ease: [0.2, 0.7, 0.2, 1] }}
+                className="h-full bg-brand-orange rounded-full"
+              />
+            </div>
 
-            <div className="flex gap-5 flex-wrap mt-4 font-mono text-[11px] tracking-widest uppercase text-white/70">
-              <span>
-                <span className="inline-block w-3 h-3 rounded-sm bg-brand-orange mr-2 align-middle" />
-                Entradas semanais (R$)
-              </span>
-              <span className="opacity-50">Sem 1: 12/abr · Sem 8: 31/mai</span>
+            {/* Valores */}
+            <div className="flex flex-col sm:flex-row justify-between gap-6">
+              <div>
+                <div className="text-[10px] font-mono font-black uppercase tracking-widest text-white/40 mb-1">Arrecadado</div>
+                <div className="text-2xl md:text-3xl font-black text-white">
+                  R$ {arrecadado.toLocaleString('pt-BR')}
+                </div>
+              </div>
+              <div className="sm:text-center">
+                <div className="text-[10px] font-mono font-black uppercase tracking-widest text-white/40 mb-1">Falta arrecadar</div>
+                <div className="text-2xl md:text-3xl font-black text-brand-orange">
+                  R$ {Math.max(0, meta - arrecadado).toLocaleString('pt-BR')}
+                </div>
+              </div>
+              <div className="sm:text-right">
+                <div className="text-[10px] font-mono font-black uppercase tracking-widest text-white/40 mb-1">Meta total</div>
+                <div className="text-2xl md:text-3xl font-black text-white">
+                  R$ {meta.toLocaleString('pt-BR')}
+                </div>
+              </div>
             </div>
           </div>
         </div>
