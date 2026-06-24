@@ -69,7 +69,6 @@ function Layout({ children }: { children: React.ReactNode }) {
                 { name: 'Equipe', path: '/atletas' },
                 { name: 'Rifa 🏆', path: '/rifa' },
                 { name: 'Ranking', path: '/ranking' },
-                { name: 'Cantina', path: '/cardapio' },
                 { name: 'Parceiros', path: '/patrocinadores' },
                 { name: 'Transparência', path: '/arrecadacao' },
               ].map((item) => (
@@ -118,7 +117,6 @@ function Layout({ children }: { children: React.ReactNode }) {
                   { name: 'Equipe', path: '/atletas' },
                   { name: 'Rifa 🏆', path: '/rifa' },
                   { name: 'Ranking', path: '/ranking' },
-                  { name: 'Cantina', path: '/cardapio' },
                   { name: 'Parceiros', path: '/patrocinadores' },
                   { name: 'Transparência', path: '/arrecadacao' },
                 ].map((item) => (
@@ -170,7 +168,6 @@ function Layout({ children }: { children: React.ReactNode }) {
             <h4 className="font-bold uppercase text-xs tracking-widest text-brand-orange mb-6">Apoie a Base</h4>
             <ul className="flex flex-col gap-3 text-sm text-slate-400">
               <li><Link to="/rifa" className="hover:text-white transition-colors">Rifa iPhone 16</Link></li>
-              <li><Link to="/cardapio" className="hover:text-white transition-colors">Cantina Solidária</Link></li>
               <li><Link to="/arrecadacao" className="hover:text-white transition-colors">Transparência</Link></li>
             </ul>
           </div>
