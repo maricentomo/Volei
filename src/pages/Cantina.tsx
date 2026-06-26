@@ -288,7 +288,7 @@ export default function Cantina() {
                 <h2 className="font-black text-[#0F172A] text-2xl uppercase tracking-tighter">{sec.category}</h2>
                 <div className="flex-1 h-px bg-gray-200 ml-1" />
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {sec.items.map(item => (
                   <ItemCard key={item.id} item={item} onAdd={addToCart} />
                 ))}
