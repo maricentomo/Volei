@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Milk, GlassWater, CupSoda, Zap, Coffee,
   Croissant, Bubbles, Popcorn, Cookie, Candy,
@@ -105,14 +105,31 @@ function fmt(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-function ItemCard({ item, onAdd }: {
+function ItemCard({ item, cartQty, onAdd }: {
   item: { id: string; name: string; price: number };
+  cartQty: number;
   onAdd: (item: { id: string; name: string; price: number }, qty: number) => void;
 }) {
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(cartQty > 0 ? cartQty : 1);
+
+  useEffect(() => {
+    setQty(cartQty > 0 ? cartQty : 1);
+  }, [cartQty]);
+
+  const inCart = cartQty > 0;
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-4 flex flex-col gap-3 hover:border-[#ed6c15] transition-colors shadow-sm">
-      <div className="flex justify-center pt-1">{ICONS[item.id]}</div>
+    <div className={`bg-white rounded-2xl border-2 p-4 flex flex-col gap-3 transition-colors shadow-sm ${
+      inCart ? 'border-[#ed6c15]' : 'border-gray-200 hover:border-[#ed6c15]'
+    }`}>
+      <div className="flex justify-center pt-1 relative">
+        {ICONS[item.id]}
+        {inCart && (
+          <span className="absolute -top-1 -right-2 bg-[#ed6c15] text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center leading-none">
+            {cartQty}
+          </span>
+        )}
+      </div>
       <div className="text-center">
         <div className="font-bold text-[#0F172A] text-sm leading-tight">{item.name}</div>
         <div className="font-black text-[#ed6c15] text-xl mt-1">{fmt(item.price)}</div>
@@ -129,10 +146,14 @@ function ItemCard({ item, onAdd }: {
         >+</button>
       </div>
       <button
-        onClick={() => { onAdd(item, qty); setQty(1); }}
-        className="w-full py-2.5 bg-[#ed6c15] text-white font-black uppercase text-xs tracking-widest rounded-xl hover:bg-[#0F172A] transition-colors"
+        onClick={() => onAdd(item, qty)}
+        className={`w-full py-2.5 text-white font-black uppercase text-xs tracking-widest rounded-xl transition-colors ${
+          inCart
+            ? 'bg-[#0F172A] hover:bg-[#0F172A]/80'
+            : 'bg-[#ed6c15] hover:bg-[#0F172A]'
+        }`}
       >
-        Adicionar
+        {inCart ? 'Atualizar' : 'Adicionar'}
       </button>
     </div>
   );
@@ -170,12 +191,7 @@ export default function Cantina() {
   };
 
   const addToCart = (item: { id: string; name: string; price: number }, qty: number) => {
-    setCart(prev => {
-      const next = { ...prev };
-      if (next[item.id]) next[item.id] = { ...next[item.id], qty: next[item.id].qty + qty };
-      else next[item.id] = { ...item, qty };
-      return next;
-    });
+    setCart(prev => ({ ...prev, [item.id]: { ...item, qty } }));
   };
 
   const removeFromCart = (id: string) => {
@@ -312,7 +328,7 @@ export default function Cantina() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {sec.items.map(item => (
-                  <ItemCard key={item.id} item={item} onAdd={addToCart} />
+                  <ItemCard key={item.id} item={item} cartQty={cart[item.id]?.qty ?? 0} onAdd={addToCart} />
                 ))}
               </div>
             </div>
