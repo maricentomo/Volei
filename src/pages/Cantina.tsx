@@ -195,10 +195,11 @@ export default function Cantina() {
       const data = now.toLocaleDateString('pt-BR');
       const hora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       const itens = cartItems.map(i => `${i.name} x${i.qty}`).join(', ');
+      const itens_json = cartItems.map(i => ({ id: i.id, qty: i.qty }));
       await fetch(N8N_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data, hora, itens, total_arrecadado: total, evento: `Cantina ${data}` }),
+        body: JSON.stringify({ data, hora, itens, itens_json, total_arrecadado: total, evento: `Cantina ${data}` }),
       });
       setConfirmed(true);
       setCart({});
