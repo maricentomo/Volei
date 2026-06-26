@@ -1,27 +1,28 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
+import {
+  Milk, GlassWater, Wine, Zap, Coffee,
+  Croissant, Sandwich, Popcorn, Cookie, Candy,
+  CakeSlice, PawPrint,
+} from 'lucide-react';
 
-const IC = ({ children }: { children: ReactNode }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 mx-auto">
-    {children}
-  </svg>
-);
+const SZ = { className: 'w-10 h-10 text-[#0F172A]', strokeWidth: 1.5 };
 
-const ICONS: Record<string, ReactNode> = {
-  agua: <IC><rect x="9" y="2" width="6" height="2" rx="1"/><path d="M8.5 4h7l1 2.5V19a2 2 0 01-2 2h-5a2 2 0 01-2-2V6.5l1-2.5z"/><path d="M9 14h6"/><path d="M10.5 11q1.5-2 3 0"/></IC>,
-  refri: <IC><path d="M7 8l1.5 11a1 1 0 001 .9h5a1 1 0 001-.9L17 8H7z"/><path d="M5 8h14"/><line x1="14" y1="4" x2="12.5" y2="12"/></IC>,
-  suco: <IC><path d="M6 6h12l-1.5 14a1 1 0 01-1 .9h-7a1 1 0 01-1-.9L6 6z"/><path d="M4 6h16"/><path d="M9.5 11q2.5-2.5 5 0"/></IC>,
-  isoton: <IC><path d="M13 2L4.5 13.5H11L10 22l9.5-12H13L13 2z"/></IC>,
-  cafe: <IC><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M3 8h15v8a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><path d="M7 2v2M11 2v2M15 2v2"/></IC>,
-  salgado_assado: <IC><path d="M6 18c-1-3 0-7 2-9a5 5 0 018 0c2 2 3 6 2 9H6z"/><path d="M8 15c1-2 2-3 4-3s3 1 4 3"/><path d="M9 12c1-1 2-1.5 3-1.5S14 11 15 12"/></IC>,
-  mini_salgado: <IC><circle cx="8" cy="14" r="3"/><circle cx="16" cy="14" r="3"/><circle cx="12" cy="8" r="3"/></IC>,
-  pipoca_grande: <IC><rect x="7" y="11" width="10" height="9" rx="1"/><path d="M9 11c0-2 1-4 3-4s3 2 3 4"/><circle cx="9" cy="8" r="1.5"/><circle cx="12" cy="6" r="1.5"/><circle cx="15" cy="8" r="1.5"/></IC>,
-  pipoca_pequena: <IC><rect x="8" y="12" width="8" height="8" rx="1"/><path d="M10 12c0-1.5.8-3 2-3s2 1.5 2 3"/><circle cx="10" cy="9.5" r="1.2"/><circle cx="12" cy="8" r="1.2"/><circle cx="14" cy="9.5" r="1.2"/></IC>,
-  salgadinho: <IC><path d="M5 17L10 6l4 5 3-4 2 10H5z"/></IC>,
-  pacoquinha: <IC><rect x="6" y="8" width="12" height="8" rx="2"/><path d="M6 10h12M6 14h12M10 8v8M14 8v8"/></IC>,
-  chocolate: <IC><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M4 11h16M4 15h16M9 7v11M15 7v11"/></IC>,
-  bolinho: <IC><path d="M7 20h10"/><path d="M8 20V14h8v6"/><path d="M8 14c0-3 1.5-5 4-6 2.5 1 4 3 4 6"/><path d="M11 10c0-1 .5-2 1-2.5.5.5 1 1.5 1 2.5"/></IC>,
-  pipoquinha: <IC><rect x="9" y="13" width="6" height="7" rx="1"/><path d="M10.5 13c0-1 .6-2 1.5-2s1.5 1 1.5 2"/><circle cx="10.5" cy="11" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="13.5" cy="11" r="1"/></IC>,
-  balinha_fini: <IC><circle cx="12" cy="13" r="6"/><circle cx="6.5" cy="7.5" r="2.5"/><circle cx="17.5" cy="7.5" r="2.5"/><circle cx="10" cy="12" r="0.7" fill="#0F172A"/><circle cx="14" cy="12" r="0.7" fill="#0F172A"/><circle cx="12" cy="14.5" r="1" fill="#0F172A"/><path d="M10 16.5q2 1.5 4 0"/></IC>,
+const ICONS: Record<string, React.ReactNode> = {
+  agua:           <Milk           {...SZ} />,
+  refri:          <GlassWater     {...SZ} />,
+  suco:           <Wine           {...SZ} />,
+  isoton:         <Zap            {...SZ} />,
+  cafe:           <Coffee         {...SZ} />,
+  salgado_assado: <Croissant      {...SZ} />,
+  mini_salgado:   <Sandwich       {...SZ} />,
+  pipoca_grande:  <Popcorn        {...SZ} />,
+  pipoca_pequena: <Popcorn        {...SZ} />,
+  salgadinho:     <Cookie         {...SZ} />,
+  pacoquinha:     <Candy          {...SZ} />,
+  chocolate:      <Candy          {...SZ} />,
+  bolinho:        <CakeSlice      {...SZ} />,
+  pipoquinha:     <Popcorn        {...SZ} />,
+  balinha_fini:   <PawPrint       {...SZ} />,
 };
 
 const CANTINA_USER = 'admin';
