@@ -17,33 +17,6 @@
     },
     {
       "parameters": {
-        "operation": "append",
-        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
-        "sheetName": { "__rl": true, "value": "vendas_cantina", "mode": "name" },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "id": "={{ $now.toMillis() }}",
-            "data": "={{ $json.body.data }}",
-            "hora": "={{ $json.body.hora }}",
-            "evento": "={{ $json.body.evento }}",
-            "itens": "={{ $json.body.itens }}",
-            "total_arrecadado": "={{ $json.body.total_arrecadado }}"
-          }
-        },
-        "options": {}
-      },
-      "id": "gravar-venda",
-      "name": "Gravar Venda",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4,
-      "position": [480, 300],
-      "credentials": {
-        "googleSheetsOAuth2Api": { "id": "FHehnCnmZ5O9ewQX", "name": "Google Sheets account 2" }
-      }
-    },
-    {
-      "parameters": {
         "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
         "sheetName": { "__rl": true, "value": "estoque_cantina", "mode": "name" },
         "options": {}
@@ -52,7 +25,7 @@
       "name": "Ler Estoque",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [480, 500],
+      "position": [480, 300],
       "credentials": {
         "googleSheetsOAuth2Api": { "id": "FHehnCnmZ5O9ewQX", "name": "Google Sheets account 2" }
       }
@@ -65,7 +38,7 @@
       "name": "Calcular Novo Estoque",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 500]
+      "position": [720, 300]
     },
     {
       "parameters": {
@@ -86,7 +59,7 @@
       "name": "Atualizar Estoque",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [960, 500],
+      "position": [960, 300],
       "credentials": {
         "googleSheetsOAuth2Api": { "id": "FHehnCnmZ5O9ewQX", "name": "Google Sheets account 2" }
       }
@@ -109,23 +82,10 @@
     }
   ],
   "connections": {
-    "Webhook Cantina": {
-      "main": [
-        [
-          { "node": "Gravar Venda",   "type": "main", "index": 0 },
-          { "node": "Ler Estoque",    "type": "main", "index": 0 }
-        ]
-      ]
-    },
-    "Gravar Venda": {
-      "main": [[{ "node": "Responder OK", "type": "main", "index": 0 }]]
-    },
-    "Ler Estoque": {
-      "main": [[{ "node": "Calcular Novo Estoque", "type": "main", "index": 0 }]]
-    },
-    "Calcular Novo Estoque": {
-      "main": [[{ "node": "Atualizar Estoque", "type": "main", "index": 0 }]]
-    }
+    "Webhook Cantina":       { "main": [[{ "node": "Ler Estoque",           "type": "main", "index": 0 }]] },
+    "Ler Estoque":           { "main": [[{ "node": "Calcular Novo Estoque", "type": "main", "index": 0 }]] },
+    "Calcular Novo Estoque": { "main": [[{ "node": "Atualizar Estoque",     "type": "main", "index": 0 }]] },
+    "Atualizar Estoque":     { "main": [[{ "node": "Responder OK",          "type": "main", "index": 0 }]] }
   },
   "active": false,
   "settings": { "executionOrder": "v1" },
