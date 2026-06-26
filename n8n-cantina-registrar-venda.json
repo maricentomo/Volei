@@ -1,0 +1,73 @@
+{
+  "name": "Cantina - Registrar Venda",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cantina-registrar-venda",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-cantina",
+      "name": "Webhook Cantina",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "cantina-registrar-venda"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "cantina", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $now.toMillis() }}",
+            "data": "={{ $json.body.data }}",
+            "hora": "={{ $json.body.hora }}",
+            "evento": "={{ $json.body.evento }}",
+            "itens": "={{ $json.body.itens }}",
+            "total_arrecadado": "={{ $json.body.total_arrecadado }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "gravar-cantina",
+      "name": "Gravar na Planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [480, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "FHehnCnmZ5O9ewQX", "name": "Google Sheets account 2" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true }",
+        "options": {
+          "responseHeaders": {
+            "entries": [{ "name": "Access-Control-Allow-Origin", "value": "*" }]
+          }
+        }
+      },
+      "id": "respond-ok",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [720, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Cantina": {
+      "main": [[{ "node": "Gravar na Planilha", "type": "main", "index": 0 }]]
+    },
+    "Gravar na Planilha": {
+      "main": [[{ "node": "Responder OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": []
+}

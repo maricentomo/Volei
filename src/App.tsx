@@ -15,6 +15,7 @@ import Arrecadacao from './pages/Arrecadacao';
 import Rifa from './pages/Rifa';
 import Ranking from './pages/Ranking';
 import Cardapio from './pages/Cardapio';
+import Cantina from './pages/Cantina';
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -44,6 +45,7 @@ function AnimatedRoutes() {
           <Route path="/arrecadacao" element={<Arrecadacao />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/cardapio" element={<Cardapio />} />
+          <Route path="/cantina" element={<Cantina />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
