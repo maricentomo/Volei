@@ -99,6 +99,7 @@ const MENU = [
 ];
 
 type CartItem = { id: string; name: string; price: number; qty: number };
+type PayMethod = 'pix' | 'dinheiro';
 
 function fmt(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -111,14 +112,11 @@ function ItemCard({ item, onAdd }: {
   const [qty, setQty] = useState(1);
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-4 flex flex-col gap-3 hover:border-[#ed6c15] transition-colors shadow-sm">
-      {/* Icon */}
       <div className="flex justify-center pt-1">{ICONS[item.id]}</div>
-      {/* Name + price */}
       <div className="text-center">
         <div className="font-bold text-[#0F172A] text-sm leading-tight">{item.name}</div>
         <div className="font-black text-[#ed6c15] text-xl mt-1">{fmt(item.price)}</div>
       </div>
-      {/* Quantity */}
       <div className="flex items-center justify-center gap-3">
         <button
           onClick={() => setQty(q => Math.max(1, q - 1))}
@@ -130,7 +128,6 @@ function ItemCard({ item, onAdd }: {
           className="w-9 h-9 rounded-full bg-gray-100 text-[#0F172A] font-black flex items-center justify-center hover:bg-gray-200 transition-colors text-lg"
         >+</button>
       </div>
-      {/* Add button */}
       <button
         onClick={() => { onAdd(item, qty); setQty(1); }}
         className="w-full py-2.5 bg-[#ed6c15] text-white font-black uppercase text-xs tracking-widest rounded-xl hover:bg-[#0F172A] transition-colors"
@@ -148,7 +145,10 @@ export default function Cantina() {
   const [loginError, setLoginError] = useState(false);
 
   const [cart, setCart] = useState<Record<string, CartItem>>({});
-  const [showPix, setShowPix] = useState(false);
+  const [isDoacao, setIsDoacao] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [payMethod, setPayMethod] = useState<PayMethod>('pix');
+  const [valorRecebido, setValorRecebido] = useState('');
   const [confirming, setConfirming] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -184,9 +184,17 @@ export default function Cantina() {
 
   const cartItems = Object.values(cart);
   const total = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const recebido = parseFloat(valorRecebido.replace(',', '.') || '0');
+  const troco = recebido - total;
 
-  const pixStr = showPix && total > 0 ? gerarPix(total) : '';
+  const pixStr = showModal && !isDoacao && payMethod === 'pix' && total > 0 ? gerarPix(total) : '';
   const qrUrl = pixStr ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(pixStr)}` : '';
+
+  const abrirModal = () => {
+    setValorRecebido('');
+    setConfirmed(false);
+    setShowModal(true);
+  };
 
   const confirmar = async () => {
     setConfirming(true);
@@ -199,12 +207,22 @@ export default function Cantina() {
       const res = await fetch(N8N_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data, hora, itens, itens_json, total_arrecadado: total, evento: `Cantina ${data}` }),
+        body: JSON.stringify({
+          data, hora, itens, itens_json,
+          total_arrecadado: isDoacao ? 0 : total,
+          is_doacao: isDoacao,
+          pagamento: isDoacao ? 'vale' : payMethod,
+          evento: `Cantina ${data}`,
+        }),
       });
       if (!res.ok) throw new Error(`n8n ${res.status}`);
       setConfirmed(true);
       setCart({});
-      setTimeout(() => { setShowPix(false); setConfirmed(false); }, 3000);
+      setTimeout(() => {
+        setShowModal(false);
+        setConfirmed(false);
+        setIsDoacao(false);
+      }, 3000);
     } catch {
       alert('Erro ao registrar na planilha. Registre manualmente.');
     } finally {
@@ -265,10 +283,15 @@ export default function Cantina() {
           <span className="text-[#ed6c15] font-black text-base uppercase tracking-widest">Cantina Solidária</span>
           <div className="text-white/40 text-xs font-mono mt-0.5">Caixa · {new Date().toLocaleDateString('pt-BR')}</div>
         </div>
-        <div className="flex items-center gap-4">
-          {total > 0 && (
+        <div className="flex items-center gap-3">
+          {total > 0 && !isDoacao && (
             <span className="bg-[#ed6c15] text-white font-black text-sm px-4 py-1.5 rounded-full tabular-nums">
               {fmt(total)}
+            </span>
+          )}
+          {isDoacao && total > 0 && (
+            <span className="bg-green-500 text-white font-black text-xs px-3 py-1.5 rounded-full uppercase tracking-widest">
+              Vale Lanche
             </span>
           )}
           <button onClick={logout} className="text-white/30 text-xs hover:text-white transition-colors uppercase tracking-widest font-mono">
@@ -284,7 +307,6 @@ export default function Cantina() {
           {MENU.map(sec => (
             <div key={sec.category}>
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">{sec.emoji}</span>
                 <h2 className="font-black text-[#0F172A] text-2xl uppercase tracking-tighter">{sec.category}</h2>
                 <div className="flex-1 h-px bg-gray-200 ml-1" />
               </div>
@@ -321,16 +343,35 @@ export default function Cantina() {
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-between items-center py-3 border-t border-gray-100 mb-4">
+
+                  <div className="flex justify-between items-center py-3 border-t border-gray-100 mb-3">
                     <span className="font-black uppercase text-[#0F172A] text-sm tracking-wide">Total</span>
-                    <span className="font-black text-[#ed6c15] text-2xl tabular-nums">{fmt(total)}</span>
+                    <span className={`font-black text-2xl tabular-nums ${isDoacao ? 'line-through text-gray-300' : 'text-[#ed6c15]'}`}>
+                      {fmt(total)}
+                    </span>
                   </div>
+
+                  {/* Vale Lanche toggle */}
                   <button
-                    onClick={() => setShowPix(true)}
-                    className="w-full py-3.5 bg-[#ed6c15] text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-[#0F172A] transition-colors"
+                    onClick={() => setIsDoacao(v => !v)}
+                    className={`w-full py-2.5 mb-3 font-black uppercase text-xs tracking-widest rounded-xl border-2 transition-colors ${
+                      isDoacao
+                        ? 'bg-green-500 border-green-500 text-white'
+                        : 'bg-white border-gray-200 text-gray-400 hover:border-green-400 hover:text-green-500'
+                    }`}
                   >
-                    Gerar PIX →
+                    🏐 Vale Lanche (Atleta)
                   </button>
+
+                  <button
+                    onClick={abrirModal}
+                    className={`w-full py-3.5 text-white font-black uppercase tracking-widest text-sm rounded-xl transition-colors ${
+                      isDoacao ? 'bg-green-500 hover:bg-green-600' : 'bg-[#ed6c15] hover:bg-[#0F172A]'
+                    }`}
+                  >
+                    {isDoacao ? 'Entregar →' : 'Prosseguir →'}
+                  </button>
+
                   <button
                     onClick={() => setCart({})}
                     className="w-full py-2 text-gray-400 text-xs uppercase tracking-widest mt-2 hover:text-gray-600 transition-colors font-mono"
@@ -344,43 +385,144 @@ export default function Cantina() {
         </div>
       </div>
 
-      {/* PIX Modal */}
-      {showPix && (
+      {/* Modal */}
+      {showModal && (
         <div
           className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4"
-          onClick={() => !confirming && !confirmed && setShowPix(false)}
+          onClick={() => !confirming && !confirmed && setShowModal(false)}
         >
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+
+            {/* Success screen */}
             {confirmed ? (
               <div className="text-center py-8">
                 <div className="text-[64px] mb-4">✅</div>
-                <h3 className="font-black text-[#0F172A] text-2xl uppercase tracking-tight">Venda registrada!</h3>
+                <h3 className="font-black text-[#0F172A] text-2xl uppercase tracking-tight">
+                  {isDoacao ? 'Entrega registrada!' : 'Venda registrada!'}
+                </h3>
                 <p className="text-gray-500 text-sm mt-2">Planilha atualizada com sucesso.</p>
               </div>
-            ) : (
+
+            /* Vale Lanche screen */
+            ) : isDoacao ? (
               <>
                 <div className="text-center mb-5">
-                  <span className="inline-flex items-center gap-2 bg-[#ed6c15] text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Aguardando pagamento
+                  <span className="inline-flex items-center gap-2 bg-green-500 text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
+                    🏐 Vale Lanche · Atleta
                   </span>
-                  <div className="text-4xl font-black text-[#0F172A] mt-4 tabular-nums">{fmt(total)}</div>
+                  <div className="line-through text-gray-300 text-3xl font-black mt-4 tabular-nums">{fmt(total)}</div>
+                  <div className="text-green-500 font-black text-sm mt-1 uppercase tracking-widest">Gratuito</div>
                 </div>
-                <div className="flex justify-center mb-4">
-                  <img src={qrUrl} alt="QR Code PIX" className="w-[220px] h-[220px] rounded-xl border border-gray-100" />
-                </div>
-                <div className="bg-gray-50 rounded-xl p-3 mb-5 cursor-pointer" onClick={() => navigator.clipboard?.writeText(pixStr)}>
-                  <p className="text-[10px] font-mono uppercase text-gray-400 mb-1">Pix copia e cola · toque para copiar</p>
-                  <p className="text-[10px] font-mono text-gray-600 break-all select-all line-clamp-2">{pixStr}</p>
+                <div className="flex flex-col gap-1 mb-5">
+                  {cartItems.map(ci => (
+                    <div key={ci.id} className="flex justify-between text-sm py-1.5 border-b border-gray-50">
+                      <span className="text-[#0F172A]">{ci.name} x{ci.qty}</span>
+                      <span className="text-gray-300 line-through tabular-nums">{fmt(ci.price * ci.qty)}</span>
+                    </div>
+                  ))}
                 </div>
                 <button
                   onClick={confirmar}
                   disabled={confirming}
-                  className="w-full py-4 bg-[#ed6c15] text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-[#0F172A] transition-colors disabled:opacity-50"
+                  className="w-full py-4 bg-green-500 text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-green-600 transition-colors disabled:opacity-50"
                 >
-                  {confirming ? 'Registrando…' : '✓ Confirmar pagamento recebido'}
+                  {confirming ? 'Registrando…' : '✓ Confirmar entrega'}
                 </button>
                 <button
-                  onClick={() => setShowPix(false)}
+                  onClick={() => setShowModal(false)}
+                  className="w-full py-2 text-gray-400 text-xs uppercase tracking-widest mt-2 font-mono"
+                >
+                  Cancelar
+                </button>
+              </>
+
+            /* Payment screen */
+            ) : (
+              <>
+                <div className="text-center mb-4">
+                  <div className="text-4xl font-black text-[#0F172A] tabular-nums">{fmt(total)}</div>
+                </div>
+
+                {/* Payment method tabs */}
+                <div className="flex gap-1 mb-5 p-1 bg-gray-100 rounded-xl">
+                  {(['pix', 'dinheiro'] as PayMethod[]).map(m => (
+                    <button
+                      key={m}
+                      onClick={() => setPayMethod(m)}
+                      className={`flex-1 py-2 rounded-lg font-black uppercase text-xs tracking-widest transition-all ${
+                        payMethod === m
+                          ? 'bg-white text-[#0F172A] shadow-sm'
+                          : 'text-gray-400 hover:text-gray-600'
+                      }`}
+                    >
+                      {m === 'pix' ? 'PIX' : 'Dinheiro'}
+                    </button>
+                  ))}
+                </div>
+
+                {payMethod === 'pix' ? (
+                  <>
+                    <div className="text-center mb-3">
+                      <span className="inline-flex items-center gap-2 bg-[#ed6c15] text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Aguardando pagamento
+                      </span>
+                    </div>
+                    <div className="flex justify-center mb-4">
+                      <img src={qrUrl} alt="QR Code PIX" className="w-[220px] h-[220px] rounded-xl border border-gray-100" />
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-3 mb-5 cursor-pointer" onClick={() => navigator.clipboard?.writeText(pixStr)}>
+                      <p className="text-[10px] font-mono uppercase text-gray-400 mb-1">Pix copia e cola · toque para copiar</p>
+                      <p className="text-[10px] font-mono text-gray-600 break-all select-all line-clamp-2">{pixStr}</p>
+                    </div>
+                    <button
+                      onClick={confirmar}
+                      disabled={confirming}
+                      className="w-full py-4 bg-[#ed6c15] text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-[#0F172A] transition-colors disabled:opacity-50"
+                    >
+                      {confirming ? 'Registrando…' : '✓ Confirmar pagamento recebido'}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-4">
+                      <label className="block text-[10px] font-mono uppercase tracking-widest text-gray-400 mb-2">Valor recebido</label>
+                      <div className="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-4 py-3 focus-within:border-[#0F172A] transition-colors">
+                        <span className="text-gray-400 font-black text-sm shrink-0">R$</span>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={valorRecebido}
+                          onChange={e => setValorRecebido(e.target.value)}
+                          placeholder="0,00"
+                          autoFocus
+                          className="flex-1 outline-none text-[#0F172A] font-black text-2xl tabular-nums bg-transparent placeholder:text-gray-200"
+                        />
+                      </div>
+                    </div>
+                    {recebido > 0 && (
+                      <div className={`rounded-xl px-4 py-3 mb-4 flex justify-between items-center border ${
+                        troco >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'
+                      }`}>
+                        <span className={`font-black text-sm uppercase tracking-wide ${troco >= 0 ? 'text-green-700' : 'text-red-600'}`}>
+                          {troco >= 0 ? 'Troco' : 'Falta'}
+                        </span>
+                        <span className={`font-black text-2xl tabular-nums ${troco >= 0 ? 'text-green-700' : 'text-red-600'}`}>
+                          {fmt(Math.abs(troco))}
+                        </span>
+                      </div>
+                    )}
+                    <button
+                      onClick={confirmar}
+                      disabled={confirming || recebido < total}
+                      className="w-full py-4 bg-[#ed6c15] text-white font-black uppercase tracking-widest text-sm rounded-xl hover:bg-[#0F172A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {confirming ? 'Registrando…' : '✓ Confirmar pagamento recebido'}
+                    </button>
+                  </>
+                )}
+
+                <button
+                  onClick={() => setShowModal(false)}
                   className="w-full py-2 text-gray-400 text-xs uppercase tracking-widest mt-2 font-mono"
                 >
                   Cancelar

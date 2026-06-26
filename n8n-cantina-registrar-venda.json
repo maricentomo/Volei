@@ -32,7 +32,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const vendidos = $('Webhook Cantina').first().json.body.itens_json || [];\nconst estoque = $('Ler Estoque').all().map(i => i.json);\n\nconst updates = [];\nfor (const v of vendidos) {\n  const row = estoque.find(r => r.id === v.id);\n  if (row) {\n    updates.push({\n      id: v.id,\n      nome: row.nome,\n      quantidade: Math.max(0, Number(row.quantidade) - Number(v.qty))\n    });\n  }\n}\nreturn updates.map(u => ({ json: u }));"
+        "jsCode": "const body = $('Webhook Cantina').first().json.body || {};\nconst vendidos = body.itens_json || [];\nconst isDoacao = body.is_doacao === true;\nconst estoque = $('Ler Estoque').all().map(i => i.json);\n\nconst updates = [];\nfor (const v of vendidos) {\n  const row = estoque.find(r => r.id === v.id);\n  if (row) {\n    updates.push({\n      id: v.id,\n      nome: row.nome,\n      quantidade: Math.max(0, Number(row.quantidade) - Number(v.qty)),\n      qtd_doada: Number(row.qtd_doada || 0) + (isDoacao ? Number(v.qty) : 0)\n    });\n  }\n}\nreturn updates.map(u => ({ json: u }));"
       },
       "id": "calcular-estoque",
       "name": "Calcular Novo Estoque",
@@ -49,7 +49,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "id": "={{ $json.id }}",
-            "quantidade": "={{ $json.quantidade }}"
+            "quantidade": "={{ $json.quantidade }}",
+            "qtd_doada": "={{ $json.qtd_doada }}"
           },
           "matchingColumns": ["id"]
         },
