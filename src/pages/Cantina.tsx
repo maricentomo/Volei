@@ -45,32 +45,32 @@ const MENU = [
     category: 'Bebidas',
     emoji: '🥤',
     items: [
-      { id: 'agua',          name: 'Água',               price: 5.00 },
-      { id: 'refri',         name: 'Refrigerante',        price: 5.00 },
-      { id: 'suco',          name: 'Suco / Água de coco', price: 5.00 },
-      { id: 'isoton',        name: 'Isotônico',           price: 9.00 },
-      { id: 'cafe',          name: 'Café',                price: 2.00 },
+      { id: 'agua',   name: 'Água',               price: 5.00, icon: '💧' },
+      { id: 'refri',  name: 'Refrigerante',        price: 5.00, icon: '🥤' },
+      { id: 'suco',   name: 'Suco / Água de coco', price: 5.00, icon: '🍹' },
+      { id: 'isoton', name: 'Isotônico',           price: 9.00, icon: '⚡' },
+      { id: 'cafe',   name: 'Café',                price: 2.00, icon: '☕' },
     ],
   },
   {
     category: 'Salgados',
     emoji: '🥐',
     items: [
-      { id: 'salgado_assado',  name: 'Salgado assado',         price: 10.00 },
-      { id: 'mini_salgado',    name: 'Mini salgado (10 unid)', price: 10.00 },
-      { id: 'pipoca_grande',   name: 'Pipoca grande',          price:  8.00 },
-      { id: 'pipoca_pequena',  name: 'Pipoca pequena',         price:  4.50 },
-      { id: 'salgadinho',      name: 'Salgadinho',             price:  4.00 },
+      { id: 'salgado_assado', name: 'Salgado assado',         price: 10.00, icon: '🥐' },
+      { id: 'mini_salgado',   name: 'Mini salgado (10 unid)', price: 10.00, icon: '🧆' },
+      { id: 'pipoca_grande',  name: 'Pipoca grande',          price:  8.00, icon: '🍿' },
+      { id: 'pipoca_pequena', name: 'Pipoca pequena',         price:  4.50, icon: '🍿' },
+      { id: 'salgadinho',     name: 'Salgadinho',             price:  4.00, icon: '🥨' },
     ],
   },
   {
     category: 'Doces',
     emoji: '🍫',
     items: [
-      { id: 'pacoquinha', name: 'Paçoquinha',       price: 2.00 },
-      { id: 'chocolate',  name: 'Chocolate',         price: 5.00 },
-      { id: 'bolinho',    name: 'Bolinho / Barrinha', price: 4.00 },
-      { id: 'pipoquinha', name: 'Pipoquinha',         price: 2.00 },
+      { id: 'pacoquinha', name: 'Paçoquinha',        price: 2.00, icon: '🍬' },
+      { id: 'chocolate',  name: 'Chocolate',          price: 5.00, icon: '🍫' },
+      { id: 'bolinho',    name: 'Bolinho / Barrinha', price: 4.00, icon: '🧁' },
+      { id: 'pipoquinha', name: 'Pipoquinha',          price: 2.00, icon: '🍿' },
     ],
   },
 ];
@@ -82,33 +82,38 @@ function fmt(v: number) {
 }
 
 function ItemCard({ item, onAdd }: {
-  item: { id: string; name: string; price: number };
+  item: { id: string; name: string; price: number; icon: string };
   onAdd: (item: { id: string; name: string; price: number }, qty: number) => void;
 }) {
   const [qty, setQty] = useState(1);
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3 hover:border-[#ed6c15] transition-colors shadow-sm">
-      <div>
+    <div className="bg-white rounded-2xl border border-gray-200 p-4 flex flex-col gap-3 hover:border-[#ed6c15] transition-colors shadow-sm">
+      {/* Icon */}
+      <div className="text-4xl text-center">{item.icon}</div>
+      {/* Name + price */}
+      <div className="text-center">
         <div className="font-bold text-[#0F172A] text-sm leading-tight">{item.name}</div>
         <div className="font-black text-[#ed6c15] text-xl mt-1">{fmt(item.price)}</div>
       </div>
-      <div className="flex items-center gap-2 mt-auto">
+      {/* Quantity */}
+      <div className="flex items-center justify-center gap-3">
         <button
           onClick={() => setQty(q => Math.max(1, q - 1))}
-          className="w-8 h-8 rounded-full bg-gray-100 text-[#0F172A] font-black flex items-center justify-center hover:bg-gray-200 transition-colors"
+          className="w-9 h-9 rounded-full bg-gray-100 text-[#0F172A] font-black flex items-center justify-center hover:bg-gray-200 transition-colors text-lg"
         >−</button>
-        <span className="font-black text-[#0F172A] text-sm w-6 text-center tabular-nums">{qty}</span>
+        <span className="font-black text-[#0F172A] text-lg w-8 text-center tabular-nums">{qty}</span>
         <button
           onClick={() => setQty(q => q + 1)}
-          className="w-8 h-8 rounded-full bg-gray-100 text-[#0F172A] font-black flex items-center justify-center hover:bg-gray-200 transition-colors"
+          className="w-9 h-9 rounded-full bg-gray-100 text-[#0F172A] font-black flex items-center justify-center hover:bg-gray-200 transition-colors text-lg"
         >+</button>
-        <button
-          onClick={() => { onAdd(item, qty); setQty(1); }}
-          className="flex-1 py-2 bg-[#ed6c15] text-white font-black uppercase text-[11px] tracking-wide rounded-lg hover:bg-[#0F172A] transition-colors"
-        >
-          + Adicionar
-        </button>
       </div>
+      {/* Add button */}
+      <button
+        onClick={() => { onAdd(item, qty); setQty(1); }}
+        className="w-full py-2.5 bg-[#ed6c15] text-white font-black uppercase text-xs tracking-widest rounded-xl hover:bg-[#0F172A] transition-colors"
+      >
+        Adicionar
+      </button>
     </div>
   );
 }
@@ -258,7 +263,7 @@ export default function Cantina() {
                 <h2 className="font-black text-[#0F172A] text-2xl uppercase tracking-tighter">{sec.category}</h2>
                 <div className="flex-1 h-px bg-gray-200 ml-1" />
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
+              <div className="grid grid-cols-3 gap-4">
                 {sec.items.map(item => (
                   <ItemCard key={item.id} item={item} onAdd={addToCart} />
                 ))}
