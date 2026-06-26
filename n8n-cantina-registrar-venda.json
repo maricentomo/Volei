@@ -19,7 +19,7 @@
       "parameters": {
         "operation": "append",
         "documentId": { "__rl": true, "value": "1UMuBbFc_hbdtRRdiVboCbpLLpkkeL0XQuS1gtuXJxIE", "mode": "id" },
-        "sheetName": { "__rl": true, "value": "cantina", "mode": "name" },
+        "sheetName": { "__rl": true, "value": "vendas_cantina", "mode": "name" },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
