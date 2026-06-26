@@ -1,25 +1,25 @@
 import { useState } from 'react';
 import {
-  Milk, GlassWater, Wine, Zap, Coffee,
-  Croissant, Sandwich, Popcorn, Cookie, Candy,
-  CakeSlice, PawPrint,
+  Milk, GlassWater, CupSoda, Zap, Coffee,
+  Croissant, Bubbles, Popcorn, Cookie, Candy,
+  CakeSlice, PawPrint, Cuboid,
 } from 'lucide-react';
 
 const SZ = { className: 'w-10 h-10 text-[#0F172A]', strokeWidth: 1.5 };
 
 const ICONS: Record<string, React.ReactNode> = {
   agua:           <Milk           {...SZ} />,
-  refri:          <GlassWater     {...SZ} />,
-  suco:           <Wine           {...SZ} />,
+  refri:          <CupSoda        {...SZ} />,
+  suco:           <GlassWater     {...SZ} />,
   isoton:         <Zap            {...SZ} />,
   cafe:           <Coffee         {...SZ} />,
   salgado_assado: <Croissant      {...SZ} />,
-  mini_salgado:   <Sandwich       {...SZ} />,
+  mini_salgado:   <Bubbles        {...SZ} />,
   pipoca_grande:  <Popcorn        {...SZ} />,
   pipoca_pequena: <Popcorn        {...SZ} />,
   salgadinho:     <Cookie         {...SZ} />,
   pacoquinha:     <Candy          {...SZ} />,
-  chocolate:      <Candy          {...SZ} />,
+  chocolate:      <Cuboid         {...SZ} />,
   bolinho:        <CakeSlice      {...SZ} />,
   pipoquinha:     <Popcorn        {...SZ} />,
   balinha_fini:   <PawPrint       {...SZ} />,
