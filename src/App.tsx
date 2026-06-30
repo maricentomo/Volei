@@ -21,8 +21,11 @@ const RIFA_TOTAL = 1000;
 const SOLD_URL = 'https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-vendidos';
 
 function AnnounceBanner() {
-  const text = 'ATENÇÃO!! ADIAMOS O SORTEIO PARA 21/07 ÀS 19H • ACOMPANHE AO VIVO PELO INSTA @basevoleilouveira';
-  const items = Array(8).fill(text);
+  const phrases = [
+    'ATENÇÃO!! ADIAMOS O SORTEIO PARA 21/07 ÀS 19H',
+    'TRANSMISSÃO DO SORTEIO NO @basevoleilouveira',
+  ];
+  const items = Array(4).fill(phrases).flat();
 
   return (
     <div className="bg-[#ed6c15] text-[#0F172A] py-4 overflow-hidden sticky top-[91px] z-40">
@@ -30,7 +33,7 @@ function AnnounceBanner() {
         {items.map((t, i) => (
           <span key={i} className="inline-flex items-center whitespace-nowrap">
             {t}
-            <span className="mx-10 opacity-40">●</span>
+            <span className="mx-20 opacity-40">●</span>
           </span>
         ))}
       </div>
