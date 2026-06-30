@@ -25,7 +25,7 @@ function AnnounceBanner() {
   const items = Array(8).fill(text);
 
   return (
-    <div className="bg-[#ed6c15] text-[#0F172A] py-4 overflow-hidden">
+    <div className="bg-[#ed6c15] text-[#0F172A] py-4 overflow-hidden sticky top-[91px] z-40">
       <div className="announce-track font-black uppercase tracking-[0.05em] text-sm">
         {items.map((t, i) => (
           <span key={i} className="inline-flex items-center whitespace-nowrap">
