@@ -23,7 +23,7 @@ const SOLD_URL = 'https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-ven
 function AnnounceBanner() {
   const phrases = [
     'ATENÇÃO!! ADIAMOS O SORTEIO PARA 21/07 ÀS 19H',
-    'TRANSMISSÃO DO SORTEIO NO @basevoleilouveira',
+    'TRANSMISSÃO DO SORTEIO NO INSTAGRAM @basevoleilouveira',
   ];
   const items = Array(4).fill(phrases).flat();
 
