@@ -28,7 +28,7 @@
 .announce-track {
   display: inline-flex;
   width: max-content;
-  animation: marq 20s linear infinite;
+  animation: marq 40s linear infinite;
 }
 
 .rifa-grid {
