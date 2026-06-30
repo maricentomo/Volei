@@ -17,6 +17,40 @@ import Ranking from './pages/Ranking';
 import Cardapio from './pages/Cardapio';
 import Cantina from './pages/Cantina';
 
+const RIFA_TOTAL = 1000;
+const SOLD_URL = 'https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-vendidos';
+
+function AnnounceBanner() {
+  const [remaining, setRemaining] = React.useState<number | null>(null);
+  const fetched = React.useRef(false);
+
+  React.useEffect(() => {
+    if (fetched.current) return;
+    fetched.current = true;
+    fetch(SOLD_URL)
+      .then(r => r.json())
+      .then((d: { numeros: string[] }) => setRemaining(RIFA_TOTAL - d.numeros.length))
+      .catch(() => {});
+  }, []);
+
+  const label = remaining !== null ? `${remaining} NÚMEROS` : '…';
+  const text = `ATENÇÃO!! ADIAMOS O SORTEIO PARA 21/07 ÀS 19H · RESTAM APENAS ${label}`;
+  const items = Array(8).fill(text);
+
+  return (
+    <div className="bg-[#ed6c15] text-[#0F172A] py-2.5 overflow-hidden" aria-live="polite">
+      <div className="announce-track font-black uppercase tracking-[0.05em] text-sm">
+        {items.map((t, i) => (
+          <span key={i} className="inline-flex items-center whitespace-nowrap">
+            {t}
+            <span className="mx-10 opacity-40">●</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
@@ -141,6 +175,8 @@ function Layout({ children }: { children: React.ReactNode }) {
           )}
         </AnimatePresence>
       </header>
+
+      <AnnounceBanner />
 
       <main className="flex-grow">
         {children}
