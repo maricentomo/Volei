@@ -21,7 +21,7 @@ const RIFA_TOTAL = 1000;
 const SOLD_URL = 'https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-vendidos';
 
 function AnnounceBanner() {
-  const text = 'ATENÇÃO!! ADIAMOS O SORTEIO PARA 21/07 ÀS 19H';
+  const text = 'ATENÇÃO!! ADIAMOS O SORTEIO PARA 21/07 ÀS 19H • ACOMPANHE AO VIVO PELO INSTA @basevoleilouveira';
   const items = Array(8).fill(text);
 
   return (
