@@ -222,9 +222,9 @@ export default function Home() {
                   <span className="text-base text-white/65">/ R$ {meta.toLocaleString('pt-BR')}</span>
                 </div>
                 <div className="flex gap-3 mt-6">
-                  <Link to="/rifa" className="flex-1 text-center bg-brand-orange text-white px-5 py-3 rounded-lg font-black uppercase tracking-wider text-sm hover:bg-white hover:text-brand-orange transition-colors">
-                    Comprar rifa →
-                  </Link>
+                  <span className="flex-1 text-center bg-white/10 text-white/40 px-5 py-3 rounded-lg font-black uppercase tracking-wider text-sm cursor-not-allowed select-none">
+                    Sorteio encerrado
+                  </span>
                   <a href="#doar" className="flex-1 text-center border border-white/30 text-white px-5 py-3 rounded-lg font-black uppercase tracking-wider text-sm hover:bg-white/10 transition-colors">
                     Doar Pix
                   </a>
@@ -272,9 +272,9 @@ export default function Home() {
                 </h2>
                 <Link
                   to="/rifa"
-                  className="inline-flex items-center gap-3 bg-brand-orange text-white px-8 py-4 rounded-lg font-black uppercase tracking-widest text-sm hover:bg-white hover:text-brand-orange transition-colors"
+                  className="inline-flex items-center gap-3 bg-white/10 text-white/50 px-8 py-4 rounded-lg font-black uppercase tracking-widest text-sm cursor-default pointer-events-none select-none"
                 >
-                  Acessar a rifa <ArrowRight size={18} />
+                  Sorteio encerrado
                 </Link>
               </motion.div>
 

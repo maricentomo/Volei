@@ -115,12 +115,9 @@ function Layout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="hidden lg:block">
-            <Link
-              to="/rifa"
-              className="inline-flex items-center gap-2 bg-brand-orange text-white font-bold px-6 py-3 rounded-full transition-all hover:bg-navy hover:text-white border-2 border-brand-orange hover:border-navy text-sm"
-            >
-              Comprar rifa <ArrowRight size={16} />
-            </Link>
+            <span className="inline-flex items-center gap-2 bg-navy/10 text-navy/40 font-bold px-6 py-3 rounded-full border-2 border-navy/10 text-sm cursor-not-allowed select-none">
+              Sorteio encerrado
+            </span>
           </div>
 
           <button className="xl:hidden text-navy" onClick={() => setIsMenuOpen(!isMenuOpen)}>

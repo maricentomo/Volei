@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { useCampanha, type Atleta } from '../lib/useCampanha';
 
 const MAINTENANCE_MODE = false;
+const SORTEIO_ENCERRADO = true;
 const ADMIN_USER = 'admin';
 const ADMIN_PWD = 'base@2026';
 const TEST_MODE = false;
@@ -146,6 +147,144 @@ function MaintenancePage({ atletas, onUnlock }: { atletas: Atleta[]; onUnlock: (
   );
 }
 
+const INSTAGRAM_URL = 'https://www.instagram.com/basevoleilouveira/';
+const INSTAGRAM_HANDLE = '@basevoleilouveira';
+
+function EncerradoPage() {
+  const { data } = useCampanha();
+  const atletas = data?.atletas ?? [];
+  const [soldSet, setSoldSet] = useState<Record<number, true>>({});
+  const [soldLoading, setSoldLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://bot-n8n.k474gt.easypanel.host/webhook/rifa-numeros-vendidos')
+      .then(r => r.json())
+      .then((d: { numeros: string[] }) => {
+        const s: Record<number, true> = {};
+        for (const n of d.numeros) s[parseInt(n, 10)] = true;
+        setSoldSet(s);
+      })
+      .catch(() => {})
+      .finally(() => setSoldLoading(false));
+  }, []);
+
+  const unsold = useMemo(() => {
+    const arr: number[] = [];
+    for (let i = 1; i <= 1000; i++) if (!soldSet[i]) arr.push(i);
+    return arr;
+  }, [soldSet]);
+
+  const ranking = useMemo(
+    () => [...atletas].sort((a, b) => b.sales - a.sales).slice(0, 3),
+    [atletas]
+  );
+  const medals = ['🥇', '🥈', '🥉'];
+  const positions = ['1º lugar', '2º lugar', '3º lugar'];
+
+  return (
+    <div className="min-h-screen bg-navy text-white">
+
+      {/* Hero */}
+      <div className="pt-20 pb-14 px-4 md:px-8 text-center">
+        <span className="inline-flex items-center gap-2 bg-brand-orange text-white px-3 py-1 text-[10px] font-black rounded uppercase tracking-widest mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Sorteio hoje às 19h
+        </span>
+        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
+          Agradecemos<br />
+          <span className="text-brand-orange">imensamente</span><br />
+          o apoio!
+        </h1>
+        <p className="text-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
+          Aguardem o sorteio às 19h.
+        </p>
+      </div>
+
+      {/* Instagram */}
+      <div className="py-12 px-4 border-t border-white/10 text-center">
+        <p className="text-white/40 text-[10px] uppercase tracking-widest font-mono mb-5">Acompanhe o sorteio ao vivo</p>
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-4 bg-white/10 hover:bg-brand-orange transition-colors rounded-2xl px-8 py-5 group"
+        >
+          <div className="text-3xl">📸</div>
+          <div className="text-left">
+            <div className="font-black text-white text-xl">{INSTAGRAM_HANDLE}</div>
+            <div className="text-white/50 text-xs uppercase tracking-widest mt-0.5">Instagram do Vôlei</div>
+          </div>
+          <ArrowRight size={20} className="text-brand-orange group-hover:text-white transition-colors ml-2" />
+        </a>
+      </div>
+
+      {/* Ranking */}
+      {ranking.length > 0 && (
+        <div className="py-14 px-4 md:px-8 border-t border-white/10">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-orange mb-8 text-center">Ranking final</p>
+            <div className="flex flex-col gap-4">
+              {ranking.map((a, i) => (
+                <div key={a.num} className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <span className="text-4xl shrink-0">{medals[i]}</span>
+                  <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-white/10">
+                    {a.photo ? (
+                      <img src={a.photo} alt={a.name} className="w-full h-full object-cover object-top" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-white/20 font-black text-sm">#{a.num}</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white/40 text-[10px] uppercase tracking-widest font-mono">{positions[i]}</div>
+                    <div className="font-black text-white text-lg uppercase tracking-tight truncate">{a.name}</div>
+                    <div className="text-brand-orange font-mono text-xs">{a.short} · {a.pos}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-black text-white text-2xl tabular-nums">{a.sales}</div>
+                    <div className="text-white/40 text-xs uppercase tracking-wider">números</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unsold numbers */}
+      <div className="py-14 px-4 md:px-8 border-t border-white/10">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-orange mb-4 text-center">
+            Números fora do sorteio
+          </p>
+          {soldLoading ? (
+            <p className="text-white/40 text-center text-sm py-8">Carregando números...</p>
+          ) : unsold.length === 0 ? (
+            <p className="text-white/60 text-center text-lg py-8">
+              🎉 Todos os 1000 números foram vendidos!
+            </p>
+          ) : (
+            <>
+              <p className="text-white/50 text-sm text-center mb-8 max-w-xl mx-auto">
+                Os seguintes <strong className="text-white">{unsold.length} números</strong> não foram vendidos e estarão de fora do sorteio:
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {unsold.map(n => (
+                  <span
+                    key={n}
+                    className="bg-white/10 text-white/40 font-mono text-xs px-2.5 py-1.5 rounded-lg border border-white/10 line-through"
+                  >
+                    {String(n).padStart(3, '0')}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
 function AnimatedNumber({ end }: { end: number }) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -193,6 +332,8 @@ function fmt(n: number) {
 }
 
 export default function Rifa() {
+  if (SORTEIO_ENCERRADO) return <EncerradoPage />;
+
   const [adminUnlocked, setAdminUnlocked] = useState(
     () => localStorage.getItem('rifa_admin') === 'true'
   );
@@ -202,6 +343,7 @@ export default function Rifa() {
   if (MAINTENANCE_MODE && !adminUnlocked) {
     return <MaintenancePage atletas={ATHLETES} onUnlock={() => setAdminUnlocked(true)} />;
   }
+
   const arrecadado = data?.arrecadado ?? 0;
   const meta = data?.meta ?? 40000;
   const location = useLocation();
