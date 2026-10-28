@@ -1,4 +1,4 @@
-import { ArrowRight, Copy, Handshake, X } from 'lucide-react';
+import { ArrowRight, Check, Copy, Handshake, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
@@ -65,11 +65,61 @@ function ProGallery() {
 
 const MARQUEE_ITEMS = Array(8).fill('A sua ajuda realiza um sonho');
 
+const PIX_KEY = 'voleilouveirabase@gmail.com';
+const DATA_VIAGEM = new Date('2026-10-30T00:00:00-03:00');
+
+function useCountdown(target: Date) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const diff = Math.max(target.getTime() - now, 0);
+  return {
+    done: diff === 0,
+    dias: Math.floor(diff / 86400000),
+    horas: Math.floor(diff / 3600000) % 24,
+    min: Math.floor(diff / 60000) % 60,
+    seg: Math.floor(diff / 1000) % 60,
+  };
+}
+
+function PixKeyCopy({ dark = false }: { dark?: boolean }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard?.writeText(PIX_KEY);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      className={`w-full flex items-center justify-between gap-3 rounded-xl px-4 py-3 border-2 border-dashed text-left transition-colors ${
+        dark
+          ? 'border-white/25 hover:border-brand-orange bg-white/5'
+          : 'border-[#0f172a]/20 hover:border-brand-orange bg-white'
+      }`}
+    >
+      <span className="min-w-0">
+        <span className={`block text-[10px] font-black uppercase tracking-widest ${dark ? 'text-white/50' : 'text-[#0f172a]/50'}`}>
+          Chave Pix (e-mail)
+        </span>
+        <span className={`block font-black text-sm md:text-base truncate ${dark ? 'text-white' : 'text-navy'}`}>{PIX_KEY}</span>
+      </span>
+      <span className="shrink-0 flex items-center gap-1.5 bg-brand-orange text-white px-3 py-2 rounded-lg text-[11px] font-black uppercase tracking-wider">
+        {copied ? <><Check size={14} /> Copiado</> : <><Copy size={14} /> Copiar</>}
+      </span>
+    </button>
+  );
+}
+
 export default function Home() {
   const { data } = useCampanha();
   const meta     = data?.meta ?? 40000;
   const atual    = data?.arrecadado ?? 0;
   const progresso = (atual / meta) * 100;
+  const countdown = useCountdown(DATA_VIAGEM);
 
   const [centavosInt, setCentavosInt] = useState(10000);
   const selectedAmount = centavosInt / 100;
@@ -135,29 +185,59 @@ export default function Home() {
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-navy text-white text-[10px] font-black uppercase tracking-widest">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
-                  Ativa
+                  Reta final
                 </span>
               </div>
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-navy leading-[1.0] uppercase tracking-tighter italic mb-6">
-                Um sonho<br />chamado<br />
+                Conseguimos!<br />Rumo à<br />
                 <span className="text-brand-orange">Taça Paraná.</span>
               </h1>
 
-              <p className="text-[#0f172a]/70 text-lg mb-4 max-w-xl leading-relaxed">
-                Contribua para que os atletas da Base Vôlei Louveira Sub-17 disputem a Taça Paraná — uma das maiores competições de voleibol de base do Brasil. Mais do que uma competição, essa experiência representa crescimento, amadurecimento e memórias que esses jovens levarão para o resto da vida.
-                Porque talvez, daqui a alguns anos, eles não se lembrem do placar de todos os jogos… Mas certamente se lembrarão das pessoas que acreditaram neles quando esse sonho ainda estava começando.
-              </p>
-              <p className="text-[#0f172a]/70 text-base mb-8 max-w-xl leading-relaxed">
-                <span className="font-bold text-navy">E precisamos da sua ajuda para fazer isso possível.</span>
+              <p className="text-[#0f172a]/70 text-lg mb-8 max-w-xl leading-relaxed">
+                <span className="font-bold text-navy">Obrigado a todos que contribuíram!</span> Graças a vocês, os atletas da Base Vôlei Louveira Sub-17 vão disputar a Taça Paraná. Agora, na reta final, as doações ajudam a cobrir os custos deles durante a viagem: alimentação, transporte e outras despesas.
               </p>
 
+              {/* Reta final — countdown */}
+              <div className="border-2 border-brand-orange rounded-2xl p-5 md:p-6 mb-8 max-w-xl bg-brand-orange/5">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
+                  Reta final da campanha
+                </div>
+                {countdown.done ? (
+                  <p className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-navy">
+                    É hoje! Boa viagem, atletas! 🏐
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-navy font-black uppercase tracking-tight text-sm mb-3">
+                      {countdown.dias === 0 ? 'Menos de 1 dia' : `Falta${countdown.dias > 1 ? 'm' : ''} ${countdown.dias} dia${countdown.dias > 1 ? 's' : ''}`} para a viagem
+                    </p>
+                    <div className="grid grid-cols-4 gap-2 md:gap-3">
+                      {[
+                        { v: countdown.dias, l: 'Dias' },
+                        { v: countdown.horas, l: 'Horas' },
+                        { v: countdown.min, l: 'Min' },
+                        { v: countdown.seg, l: 'Seg' },
+                      ].map(u => (
+                        <div key={u.l} className="bg-navy rounded-xl py-3 text-center">
+                          <div className="text-3xl md:text-4xl font-black text-brand-orange leading-none tabular-nums">
+                            {String(u.v).padStart(2, '0')}
+                          </div>
+                          <div className="text-[10px] font-black uppercase tracking-widest text-white/60 mt-1">{u.l}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
               <div className="flex flex-wrap gap-4">
-                <Link to="/atletas" className="btn-primary flex items-center gap-2">
-                  Conheça o projeto <ArrowRight size={16} />
-                </Link>
-                <Link to="/rifa" className="px-6 py-3 rounded-lg font-bold uppercase tracking-wider border-2 border-[#0f172a]/30 text-navy hover:bg-navy hover:text-white transition-colors flex items-center gap-2">
-                  Como ajudar <ArrowRight size={16} />
+                <a href="#doar" className="btn-primary flex items-center gap-2">
+                  Doar via Pix <ArrowRight size={16} />
+                </a>
+                <Link to="/atletas" className="px-6 py-3 rounded-lg font-bold uppercase tracking-wider border-2 border-[#0f172a]/30 text-navy hover:bg-navy hover:text-white transition-colors flex items-center gap-2">
+                  Conheça os atletas <ArrowRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -167,35 +247,23 @@ export default function Home() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="bg-navy rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between min-h-[560px] shadow-2xl"
+              className="bg-navy rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col gap-6 shadow-2xl"
             >
               {/* Rotating sticker */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                className="absolute top-4 right-4 w-20 h-20"
+                className="absolute top-4 right-4 w-16 h-16 md:w-20 md:h-20"
               >
                 <img src="/contribua.png" alt="Contribua" className="w-full h-full object-contain" />
               </motion.div>
 
               <div>
-                {/* Prize info */}
-                <div className="mb-6 pb-6 border-b border-white/10">
-                  <p className="text-white/50 font-mono text-[10px] uppercase tracking-[0.3em] mb-3">Ajude e concorra a</p>
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <p className="text-white font-black text-xl leading-tight">iPhone 16 <span className="text-brand-orange">128GB</span></p>
-                      <p className="text-white/40 font-mono text-[10px] uppercase tracking-widest mt-0.5">ou</p>
-                      <p className="text-white font-black text-xl leading-tight">R$ 4.000 <span className="text-white/50 font-mono text-sm font-normal normal-case tracking-normal">no Pix</span></p>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="flex items-center gap-1.5 bg-brand-orange/20 border border-brand-orange/30 text-brand-orange px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest w-fit mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
                   Ao vivo
                 </div>
-                <div className="text-brand-orange font-black leading-none tracking-tighter mb-2" style={{ fontSize: 'clamp(64px,8vw,108px)' }}>
+                <div className="text-brand-orange font-black leading-none tracking-tighter mb-2" style={{ fontSize: 'clamp(52px,6.5vw,92px)' }}>
                   <small className="text-[0.32em] align-top opacity-90">R$</small>
                   <AnimatedNumber end={atual} />
                 </div>
@@ -221,14 +289,61 @@ export default function Home() {
                   <span className="text-2xl">R$ {atual.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                   <span className="text-base text-white/65">/ R$ {meta.toLocaleString('pt-BR')}</span>
                 </div>
-                <div className="flex gap-3 mt-6">
-                  <span className="flex-1 text-center bg-white/10 text-white/40 px-5 py-3 rounded-lg font-black uppercase tracking-wider text-sm cursor-not-allowed select-none">
-                    Sorteio encerrado
-                  </span>
-                  <a href="#doar" className="flex-1 text-center border border-white/30 text-white px-5 py-3 rounded-lg font-black uppercase tracking-wider text-sm hover:bg-white/10 transition-colors">
-                    Doar Pix
-                  </a>
-                </div>
+              </div>
+
+              {/* Doação Pix direto no card */}
+              <div className="border-t border-white/10 pt-6">
+                <p className="text-white font-black uppercase tracking-tight text-lg mb-1">Doe via Pix agora</p>
+                <p className="text-white/55 text-sm mb-4">Copie a chave e faça o Pix pelo app do seu banco, ou gere um QR Code.</p>
+
+                <PixKeyCopy dark />
+
+                {donationPixData ? (
+                  <div className="mt-4 bg-white rounded-xl p-4 flex items-center gap-4">
+                    <img
+                      src={`data:image/png;base64,${donationPixData.qr_code_base64}`}
+                      alt="QR Code Pix"
+                      className="w-28 h-28 rounded-lg shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-[#0f172a]/50">Pague pelo app</div>
+                      <div className="text-2xl font-black tracking-tighter text-navy mb-2">R$ {donationPixData.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                      <button
+                        onClick={() => { navigator.clipboard?.writeText(donationPixData.qr_code); }}
+                        className="w-full py-2 border-2 border-[#0f172a]/20 rounded-lg font-black uppercase tracking-wider text-[11px] text-navy hover:border-brand-orange hover:text-brand-orange transition-colors"
+                      >
+                        <Copy size={12} className="inline mr-1" /> Copia e cola
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex flex-wrap gap-2 mt-4 mb-3">
+                      {[10, 30, 50, 100, 250].map(v => (
+                        <button
+                          key={v}
+                          onClick={() => setSelectedAmount(v)}
+                          className={`px-3.5 py-1.5 rounded-full font-black text-sm border-2 transition-all ${
+                            selectedAmount === v
+                              ? 'bg-brand-orange text-white border-brand-orange'
+                              : 'border-white/20 text-white hover:border-brand-orange hover:text-brand-orange'
+                          }`}
+                        >
+                          R$ {v}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => setShowDonationForm(true)}
+                      className="w-full bg-brand-orange text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-white hover:text-navy transition-colors"
+                    >
+                      Gerar QR Code de R$ {selectedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} →
+                    </button>
+                  </>
+                )}
+                <p className="text-white/45 text-[11px] mt-3 leading-relaxed">
+                  Mercado Pago · em nome de Mariana Rodrigues Centomo (Base Vôlei Louveira)
+                </p>
               </div>
             </motion.aside>
           </div>
@@ -246,105 +361,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
-      {/* ── RIFA SPOTLIGHT ───────────────────────────────────────────────── */}
-      <section className="bg-white py-20 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-navy rounded-3xl overflow-hidden p-10 md:p-14">
-
-            {/* Top: text + iPhone */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-14">
-
-              {/* Left — title + button */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-orange mb-8">
-                  A grande rifa da campanha
-                </div>
-                <h2 className="text-6xl md:text-7xl font-black uppercase leading-[0.95] tracking-tighter text-white mb-2">
-                  Concorra <br /> a um
-                </h2>
-                <h2 className="text-6xl md:text-7xl font-black uppercase leading-[0.95] tracking-tighter text-brand-orange mb-10">
-                  iPhone 16
-                </h2>
-                <Link
-                  to="/rifa"
-                  className="inline-flex items-center gap-3 bg-white/10 text-white/50 px-8 py-4 rounded-lg font-black uppercase tracking-widest text-sm cursor-default pointer-events-none select-none"
-                >
-                  Sorteio encerrado
-                </Link>
-              </motion.div>
-
-              {/* Right — iPhone + BOLABOLA girando */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="relative flex items-center justify-center min-h-[380px]"
-              >
-                <motion.img
-                  src="/bolabola.png"
-                  alt=""
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-                  className="absolute w-[280px] h-[280px] md:w-[380px] md:h-[380px] pointer-events-none select-none"
-                  style={{ mixBlendMode: 'screen', opacity: 0.55 }}
-                />
-                <img
-                  src="/iphone.png"
-                  alt="iPhone 16 — prêmio da rifa"
-                  className="relative z-10 w-full max-w-[270px] drop-shadow-2xl"
-                />
-              </motion.div>
-            </div>
-
-            {/* 3 step cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {[
-                {
-                  n: '01',
-                  label: 'Passo 01',
-                  title: 'Compre seu número',
-                  desc: 'São 1.000 números a R$ 30 cada. Você escolhe quantos quiser e já está concorrendo ao iPhone 16.',
-                },
-                {
-                  n: '02',
-                  label: 'Passo 02',
-                  title: 'Escolha o seu atleta',
-                  desc: 'Na finalização, indique para qual dos 22 atletas o crédito da venda vai. Cada compra impulsiona um nome específico no ranking interno.',
-                },
-                {
-                  n: '03',
-                  label: 'Passo 03',
-                  title: 'Torça duas vezes',
-                  desc: 'Pelo seu atleta no ranking de vendas e pelo seu número no sorteio. Quem mais vender leva prêmio; quem comprar pode levar o iPhone.',
-                },
-              ].map((step, i) => (
-                <motion.div
-                  key={step.n}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-7"
-                >
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="w-7 h-7 rounded-full bg-brand-orange flex items-center justify-center text-[10px] font-black text-white shrink-0">
-                      {step.n}
-                    </span>
-                    <span className="text-[10px] font-black uppercase tracking-[0.25em] text-brand-orange">{step.label}</span>
-                  </div>
-                  <div className="font-black uppercase text-white tracking-tight text-lg leading-tight mb-3">{step.title}</div>
-                  <p className="text-white/60 text-sm leading-relaxed">{step.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── POR QUE ESSA CATEGORIA IMPORTA ──────────────────────────────── */}
       <section className="bg-navy overflow-hidden">
@@ -469,8 +485,12 @@ export default function Home() {
               >
                 Gerar QR Code Pix →
               </button>
+              <div className="mb-5">
+                <p className="text-[11px] font-black uppercase tracking-widest text-[#0f172a]/50 mb-2">Ou faça o Pix direto pela chave</p>
+                <PixKeyCopy />
+              </div>
               <p className="text-sm text-[#0f172a]/70">
-                Beneficiário: <strong className="text-navy">Base Vôlei Louveira — Associação Esportiva</strong> · Banco Sicredi.<br />
+                Beneficiário: <strong className="text-navy">Base Vôlei Louveira</strong> — Mercado Pago em nome de <strong className="text-navy">Mariana Rodrigues Centomo</strong>.<br />
                 Toda movimentação é publicada na nossa{' '}
                 <Link to="/arrecadacao" className="text-brand-orange font-bold hover:underline">página de Transparência</Link>.
               </p>
