@@ -190,12 +190,12 @@ export default function Home() {
               </div>
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-navy leading-[1.0] uppercase tracking-tighter italic mb-6">
-                Conseguimos!<br />Rumo à<br />
+                Reta final<br />rumo à<br />
                 <span className="text-brand-orange">Taça Paraná.</span>
               </h1>
 
               <p className="text-[#0f172a]/70 text-lg mb-8 max-w-xl leading-relaxed">
-                <span className="font-bold text-navy">Obrigado a todos que contribuíram!</span> Graças a vocês, os atletas da Base Vôlei Louveira Sub-17 vão disputar a Taça Paraná. Agora, na reta final, as doações ajudam a cobrir os custos deles durante a viagem: alimentação, transporte e outras despesas.
+                <span className="font-bold text-navy">Obrigado a todos que contribuíram!</span> Graças a vocês, os atletas da Base Vôlei Louveira Sub-17 vão disputar a Taça Paraná. Mas ainda dá tempo de ajudar: as doações agora cobrem os custos deles durante a viagem, como alimentação e transporte.
               </p>
 
               {/* Reta final — countdown */}
